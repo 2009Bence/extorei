@@ -717,3 +717,46 @@ details p{
   :root{ --pad: 18px; }
   .strip-inner{ flex-direction: column; align-items: flex-start; }
 }
+/* ================================
+   MOBILE HEADER FIX (414px etc.)
+   ================================ */
+@media (max-width: 520px) {
+
+  /* ne legyen vízszintes kilógás */
+  html, body { overflow-x: hidden; }
+
+  /* header belső layout: maradjon egy sorban és ne tolja ki magát */
+  .header-inner{
+    gap: 10px;
+  }
+
+  /* a logó szöveg része mobilon túl hosszú -> rövidítjük */
+  .brand-text{
+    display: none;
+  }
+
+  /* actions: ne legyen túl sok elem */
+  .header-actions{
+    gap: 8px;
+  }
+
+  /* mobilon rejtsük el a "Demo kérése" és a Theme toggle-t a headerből */
+  .btn.btn-ghost{ display: none; }
+  .theme-toggle{ display: none; }
+
+  /* hamburger ALWAYS látszódjon mobilon */
+  .hamburger{
+    display: grid !important;
+    flex: 0 0 auto;
+  }
+
+  /* primary gomb legyen kisebb, hogy beférjen */
+  .btn.btn-primary{
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    max-width: 62vw;        /* ne lógjon ki */
+    overflow: hidden;
+    text-overflow: ellipsis; /* ha mégis hosszú lenne */
+  }
+}
