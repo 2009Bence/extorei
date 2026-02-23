@@ -1,920 +1,598 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="hu">
 <head>
-  <!-- =====================================================
-       EXTOREI SaaS Starter Dashboard (index.html)
-       Bootstrap 5 + Chart.js + sok JS
-       ===================================================== -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>BeautyOS – SaaS szépség vállalkozásoknak</title>
+  <meta name="description" content="Időpontfoglalás, vendégkezelés, automatizált emlékeztetők és marketing – fodrászoknak, körmösöknek, kozmetikáknak." />
+  <meta name="theme-color" content="#050505" />
 
-  <title>EXTOREI SaaS • Dashboard</title>
-  <meta name="description" content="Kezdő SaaS dashboard főoldal, Bootstrap 5, Chart.js, rengeteg komponens és JS.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
 
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Bootstrap Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css">
-
-  <!-- Favicon (opcionális) -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' rx='18' fill='%237c5cff'/%3E%3Ctext x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='34' fill='white'%3EE%3C/text%3E%3C/svg%3E">
-
-  <style>
-    /* Kicsi inline extra (ha nem akarsz, törölheted) */
-    .chart-wrap{ height: 280px; }
-    .chart-wrap canvas{ width:100% !important; height:100% !important; }
-    .pointer{ cursor: pointer; }
-    .skeleton{
-      background: linear-gradient(90deg, rgba(255,255,255,.06), rgba(255,255,255,.12), rgba(255,255,255,.06));
-      background-size: 200% 100%;
-      animation: shimmer 1.2s infinite;
-      border-radius: 12px;
-      min-height: 14px;
-    }
-    @keyframes shimmer{
-      0%{ background-position: 200% 0; }
-      100%{ background-position: -200% 0; }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-  <!-- =====================================================
-       TOPBAR
-       ===================================================== -->
-  <header class="app-topbar">
-    <div class="container-fluid px-3 px-lg-4 py-3">
-      <div class="d-flex align-items-center justify-content-between gap-3">
+  <!-- Noise / background fx -->
+  <div class="noise"></div>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
 
-        <!-- Left: Brand + controls -->
-        <div class="d-flex align-items-center gap-2 gap-lg-3">
-          <button id="btnSidebar" class="btn btn-ghost rounded-lg d-none d-lg-inline-flex" type="button" title="Sidebar összehúzás">
-            <i class="bi bi-layout-sidebar-inset"></i>
-          </button>
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark"></span>
+        <span class="brand-text">BeautyOS</span>
+      </a>
 
-          <button class="btn btn-ghost rounded-lg d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
-            <i class="bi bi-list"></i>
-          </button>
+      <nav class="nav">
+        <a href="#features">Funkciók</a>
+        <a href="#how">Hogyan működik</a>
+        <a href="#pricing">Árazás</a>
+        <a href="#faq">GYIK</a>
+      </nav>
 
-          <div class="app-brand fs-5">
-            EXTOREI<span class="dot">.</span> <span class="text-muted-2 fw-semibold">SaaS</span>
-          </div>
-
-          <span class="badge badge-soft rounded-pill d-none d-md-inline-flex align-items-center gap-2">
-            <i class="bi bi-lightning-charge-fill"></i>
-            <span>Starter</span>
-          </span>
-        </div>
-
-        <!-- Middle: Search -->
-        <div class="d-none d-md-flex flex-grow-1 justify-content-center">
-          <div class="search-pill d-flex align-items-center px-2" style="max-width: 640px; width: 100%;">
-            <button class="btn btn-sm text-white-50" type="button" id="btnSearchHint" title="Keresési tippek">
-              <i class="bi bi-search"></i>
-            </button>
-            <input id="globalSearch" class="form-control form-control-sm" placeholder="Keresés: ügyfél, számla, ticket, projekt..." aria-label="Keresés">
-            <button class="btn btn-sm text-white-50" type="button" id="btnClearSearch" title="Törlés">
-              <i class="bi bi-x-lg"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- Right: Actions -->
-        <div class="d-flex align-items-center gap-2">
-
-          <div class="dropdown">
-            <button class="btn btn-ghost rounded-lg dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-plus-circle"></i>
-              <span class="d-none d-lg-inline">Új</span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalNewProject"><i class="bi bi-folder-plus me-2"></i>Projekt</a></li>
-              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalNewInvoice"><i class="bi bi-receipt me-2"></i>Számla</a></li>
-              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalNewTicket"><i class="bi bi-life-preserver me-2"></i>Support ticket</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#" id="btnSeedDemoData"><i class="bi bi-stars me-2"></i>Demo adatok generálása</a></li>
-            </ul>
-          </div>
-
-          <button id="btnTheme" class="btn btn-ghost rounded-lg" type="button" title="Téma váltás">
-            <i class="bi bi-moon-stars"></i>
-          </button>
-
-          <button class="btn btn-ghost rounded-lg position-relative" type="button" id="btnNotify" title="Értesítések" data-bs-toggle="offcanvas" data-bs-target="#notifyPanel">
-            <i class="bi bi-bell"></i>
-            <span id="notifDot" class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-dark rounded-circle" style="display:none;"></span>
-          </button>
-
-          <div class="dropdown">
-            <button class="btn btn-ghost rounded-lg d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
-              <span class="d-inline-flex align-items-center justify-content-center rounded-circle border-soft" style="width:34px; height:34px;">
-                <i class="bi bi-person"></i>
-              </span>
-              <span class="d-none d-lg-inline fw-semibold">Bence</span>
-              <i class="bi bi-chevron-down d-none d-lg-inline"></i>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="#"><i class="bi bi-person-circle me-2"></i>Profil</a></li>
-              <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Beállítások</a></li>
-              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalKeyboard"><i class="bi bi-command me-2"></i>Billentyűk</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item text-danger" href="#" id="btnFakeLogout"><i class="bi bi-box-arrow-right me-2"></i>Kijelentkezés</a></li>
-            </ul>
-          </div>
-
-        </div>
+      <div class="header-actions">
+        <a class="btn btn-ghost desktop-only" href="#demo">Demo</a>
+        <a class="btn btn-primary desktop-only" href="login.html">Belépés</a>
+        <button class="icon-btn mobile-only" id="menuBtn" aria-label="Menü">
+          <span></span><span></span>
+        </button>
       </div>
+    </div>
 
-      <!-- Mobile search -->
-      <div class="d-md-none mt-3">
-        <div class="search-pill d-flex align-items-center px-2">
-          <button class="btn btn-sm text-white-50" type="button">
-            <i class="bi bi-search"></i>
-          </button>
-          <input id="globalSearchMobile" class="form-control form-control-sm" placeholder="Keresés..." aria-label="Keresés mobilon">
-          <button class="btn btn-sm text-white-50" type="button" id="btnClearSearchMobile" title="Törlés">
-            <i class="bi bi-x-lg"></i>
-          </button>
+    <!-- Mobile nav -->
+    <div class="mobile-nav" id="mobileNav" aria-hidden="true">
+      <div class="mobile-nav-inner">
+        <a href="#features" class="m-link">Funkciók</a>
+        <a href="#how" class="m-link">Hogyan működik</a>
+        <a href="#pricing" class="m-link">Árazás</a>
+        <a href="#faq" class="m-link">GYIK</a>
+        <div class="m-actions">
+          <a class="btn btn-ghost" href="#demo">Demo</a>
+          <a class="btn btn-primary" href="login.html">Belépés</a>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- =====================================================
-       SHELL
-       ===================================================== -->
-  <div class="app-shell">
-    <!-- ===================================================
-         DESKTOP SIDEBAR
-         =================================================== -->
-    <aside id="sidebar" class="app-sidebar d-none d-lg-block">
-      <div class="bg-card sidebar-card">
-        <div class="sidebar-profile d-flex align-items-center gap-3">
-          <div class="rounded-circle border-soft d-inline-flex align-items-center justify-content-center" style="width:44px; height:44px;">
-            <i class="bi bi-person-fill"></i>
+  <!-- Hero -->
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <div class="pill">
+            <span class="dot"></span>
+            <span>All-in-one SaaS szépség vállalkozásoknak</span>
           </div>
-          <div>
-            <div class="fw-bold">Bence</div>
-            <div class="text-muted-2 small">Owner • Pro trial</div>
+
+          <h1 class="h1">
+            Időpontfoglalás, vendégkezelés és
+            <span class="accent">automatikus emlékeztetők</span>
+            – egy helyen.
+          </h1>
+
+          <p class="lead">
+            Fodrász, körmös, kozmetika, masszázs: csökkentsd a no-show-t,
+            töltsd fel a naptárad, és kezeld profin a vendégeidet.
+          </p>
+
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#pricing">Kezdés 2 perc alatt</a>
+            <a class="btn btn-ghost" href="#demo">Nézd meg a demót</a>
+          </div>
+
+          <div class="trust">
+            <div class="trust-item">
+              <strong>24/7</strong><span>online foglalás</span>
+            </div>
+            <div class="trust-item">
+              <strong>-30%</strong><span>no-show cél</span>
+            </div>
+            <div class="trust-item">
+              <strong>GDPR</strong><span>alapok</span>
+            </div>
           </div>
         </div>
 
-        <hr class="soft my-3">
+        <div class="hero-card">
+          <div class="mock-top">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <div class="mock-title">BeautyOS / Overview</div>
+            <div class="mock-chip">LIVE</div>
+          </div>
 
-        <nav class="nav nav-pills flex-column gap-1" id="sideNav">
-          <a class="nav-link active d-flex align-items-center gap-2" href="#secDashboard">
-            <i class="bi bi-speedometer2"></i><span>Dashboard</span>
-          </a>
-          <a class="nav-link d-flex align-items-center gap-2" href="#secAnalytics">
-            <i class="bi bi-graph-up"></i><span>Analitika</span>
-          </a>
-          <a class="nav-link d-flex align-items-center gap-2" href="#secCustomers">
-            <i class="bi bi-people"></i><span>Ügyfelek</span>
-          </a>
-          <a class="nav-link d-flex align-items-center gap-2" href="#secBilling">
-            <i class="bi bi-credit-card"></i><span>Billing</span>
-          </a>
-          <a class="nav-link d-flex align-items-center gap-2" href="#secProjects">
-            <i class="bi bi-kanban"></i><span>Projektek</span>
-          </a>
-          <a class="nav-link d-flex align-items-center gap-2" href="#secSupport">
-            <i class="bi bi-life-preserver"></i><span>Support</span>
-          </a>
-        </nav>
+          <div class="mock-body">
+            <div class="mock-kpis">
+              <div class="kpi">
+                <div class="kpi-label">Mai foglalások</div>
+                <div class="kpi-value">18</div>
+                <div class="kpi-meta">+3 várólista</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">Bevétel</div>
+                <div class="kpi-value">248 900 Ft</div>
+                <div class="kpi-meta">+12% tegnaphoz</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">Emlékeztetők</div>
+                <div class="kpi-value">ON</div>
+                <div class="kpi-meta">SMS + Email</div>
+              </div>
+            </div>
 
-        <div class="sidebar-section-title">Rendszer</div>
+            <div class="mock-list">
+              <div class="mock-row">
+                <div class="badge b1">14:30</div>
+                <div class="mock-row-main">
+                  <strong>Kovács Anna</strong>
+                  <span>Gél lakk · 60 perc</span>
+                </div>
+                <div class="status ok">megerősítve</div>
+              </div>
 
-        <nav class="nav nav-pills flex-column gap-1">
-          <a class="nav-link d-flex align-items-center gap-2" href="#secAutomations">
-            <i class="bi bi-lightning"></i><span>Automatizmusok</span>
-          </a>
-          <a class="nav-link d-flex align-items-center gap-2" href="#secSettings">
-            <i class="bi bi-gear"></i><span>Beállítások</span>
-          </a>
-          <a class="nav-link d-flex align-items-center gap-2" href="#secTeam">
-            <i class="bi bi-diagram-3"></i><span>Team</span>
-          </a>
-        </nav>
+              <div class="mock-row">
+                <div class="badge b2">15:15</div>
+                <div class="mock-row-main">
+                  <strong>Nagy Péter</strong>
+                  <span>Hajvágás · 45 perc</span>
+                </div>
+                <div class="status warn">emlékeztető kiment</div>
+              </div>
 
-        <div class="sidebar-footer">
-          <div class="d-flex align-items-center justify-content-between">
+              <div class="mock-row">
+                <div class="badge b3">16:00</div>
+                <div class="mock-row-main">
+                  <strong>Szabó Eszter</strong>
+                  <span>Kozmetika · 75 perc</span>
+                </div>
+                <div class="status idle">fizetés után</div>
+              </div>
+            </div>
+
+            <div class="mock-bottom">
+              <button class="mini-btn" type="button" data-toast="Foglalási link másolva!">Foglalási link</button>
+              <button class="mini-btn" type="button" data-toast="Emlékeztető sablon mentve!">Sablonok</button>
+              <button class="mini-btn primary" type="button" data-toast="Demo művelet kész!">Új időpont</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Logos -->
+    <section class="logos">
+      <div class="container">
+        <p class="muted center">Kinek ideális?</p>
+        <div class="logo-row">
+          <span>Fodrászat</span>
+          <span>Körmös</span>
+          <span>Kozmetika</span>
+          <span>Masszázs</span>
+          <span>Szépségszalon</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">/ Funkciók</span>
+            <h2>Kevesebb káosz. Több vendég.</h2>
+            <p class="muted">A legfontosabb modulok egy rendszerben.</p>
+          </div>
+          <a class="btn btn-ghost" href="#demo">Kérem a demót</a>
+        </div>
+
+        <div class="grid-3">
+          <article class="card">
+            <div class="icon">📅</div>
+            <h3>Online időpontfoglalás</h3>
+            <p>Foglalási oldal + beágyazás, szolgáltatások, munkatársak, szabad idők.</p>
+            <ul class="check">
+              <li>Várólista</li>
+              <li>Előleg/foglaló</li>
+              <li>Google naptár sync (opció)</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="icon">🔔</div>
+            <h3>Automata emlékeztetők</h3>
+            <p>SMS/Email értesítések – kevesebb no-show, több bevétel.</p>
+            <ul class="check">
+              <li>Időzítés (24h/3h)</li>
+              <li>Sablonok</li>
+              <li>“Megerősítem” link</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="icon">👥</div>
+            <h3>Vendég CRM</h3>
+            <p>Jegyzetek, előzmények, költés, kedvencek – egy helyen.</p>
+            <ul class="check">
+              <li>Címkék & szegmensek</li>
+              <li>Újraaktiváló kampány</li>
+              <li>No-show score</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="icon">💳</div>
+            <h3>Fizetés & számlázás (opció)</h3>
+            <p>Előleg kezelés, online fizetés, tranzakciók export.</p>
+            <ul class="check">
+              <li>Stripe / Barion jellegű</li>
+              <li>ÁFA / export</li>
+              <li>Kuponok</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="icon">📣</div>
+            <h3>Marketing modul</h3>
+            <p>Akciók, kampányok, e-mail sorozatok.</p>
+            <ul class="check">
+              <li>Sablon library</li>
+              <li>Ugyanaz a lista (CRM)</li>
+              <li>Egyszerű riportok</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="icon">📊</div>
+            <h3>Riportok</h3>
+            <p>Top szolgáltatások, bevétel, csúcs idők, no-show.</p>
+            <ul class="check">
+              <li>Export CSV</li>
+              <li>Heti összegzés</li>
+              <li>KPI dashboard</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section alt" id="how">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">/ Hogyan működik</span>
+            <h2>Indulás 3 lépésben</h2>
+            <p class="muted">Nem kell fejlesztő. 2 perc setup.</p>
+          </div>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-n">01</div>
+            <h3>Beállítod a szolgáltatásokat</h3>
+            <p>Ár, időtartam, munkatárs, foglaló – mindent egy helyen.</p>
+          </div>
+          <div class="step">
+            <div class="step-n">02</div>
+            <h3>Megosztod a foglalási linket</h3>
+            <p>Instagram bio, Facebook, Google profil, weboldalba beágyazás.</p>
+          </div>
+          <div class="step">
+            <div class="step-n">03</div>
+            <h3>Automata emlékeztetők dolgoznak</h3>
+            <p>Kevesebb no-show. Több visszatérő vendég.</p>
+          </div>
+        </div>
+
+        <div class="callout" id="demo">
+          <div>
+            <h3>Demo kérés</h3>
+            <p class="muted">Add meg az emailt, és küldjük a demo hozzáférést.</p>
+          </div>
+
+          <form class="demo-form" id="demoForm">
+            <input type="email" required placeholder="Email címed" id="demoEmail" />
+            <button class="btn btn-primary" type="submit">Kérem a demót</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="section" id="pricing">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">/ Árazás</span>
+            <h2>Átlátható csomagok</h2>
+            <p class="muted">Kezdj kicsiben, skálázz később.</p>
+          </div>
+
+          <div class="toggle">
+            <span class="muted">Havi</span>
+            <button class="toggle-btn" id="priceToggle" aria-label="Árazás váltás"></button>
+            <span class="muted">Éves <b class="accent">(-15%)</b></span>
+          </div>
+        </div>
+
+        <div class="pricing">
+          <article class="price-card">
+            <div class="price-top">
+              <h3>Starter</h3>
+              <p class="muted">Egyéni vállalkozóknak</p>
+            </div>
+            <div class="price">
+              <span class="amount" data-month="8990" data-year="7640">8 990</span>
+              <span class="muted">Ft / hó</span>
+            </div>
+            <ul class="check">
+              <li>Online foglalás</li>
+              <li>Emlékeztetők (Email)</li>
+              <li>Vendég lista</li>
+              <li>Alap riportok</li>
+            </ul>
+            <a class="btn btn-ghost full" href="signup.html">Kipróbálom</a>
+          </article>
+
+          <article class="price-card popular">
+            <div class="ribbon">Legnépszerűbb</div>
+            <div class="price-top">
+              <h3>Pro</h3>
+              <p class="muted">Szalonoknak</p>
+            </div>
+            <div class="price">
+              <span class="amount" data-month="16990" data-year="14440">16 990</span>
+              <span class="muted">Ft / hó</span>
+            </div>
+            <ul class="check">
+              <li>Munkatárs naptár</li>
+              <li>Email + SMS emlékeztető</li>
+              <li>Foglaló/előleg (opció)</li>
+              <li>Marketing sablonok</li>
+            </ul>
+            <a class="btn btn-primary full" href="signup.html">Kezdem</a>
+          </article>
+
+          <article class="price-card">
+            <div class="price-top">
+              <h3>Studio</h3>
+              <p class="muted">Több helyszín / csapat</p>
+            </div>
+            <div class="price">
+              <span class="amount" data-month="32990" data-year="28040">32 990</span>
+              <span class="muted">Ft / hó</span>
+            </div>
+            <ul class="check">
+              <li>Több telephely</li>
+              <li>Haladó riportok</li>
+              <li>API / integrációk</li>
+              <li>Prioritás support</li>
+            </ul>
+            <a class="btn btn-ghost full" href="#demo">Egyeztessünk</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section alt" id="faq">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">/ GYIK</span>
+            <h2>Gyakori kérdések</h2>
+            <p class="muted">A legtöbb dolog 2 perc alatt tiszta.</p>
+          </div>
+        </div>
+
+        <div class="faq" id="faqList">
+          <button class="faq-item" type="button">
             <div>
-              <div class="small text-muted-2">Storage</div>
-              <div class="fw-bold">6.2 GB <span class="text-muted-2 fw-semibold">/ 20 GB</span></div>
+              <strong>Mennyire bonyolult beállítani?</strong>
+              <p class="muted">Szolgáltatások + nyitvatartás + foglalási link.</p>
             </div>
-            <button class="btn btn-sm btn-accent rounded-lg" data-bs-toggle="modal" data-bs-target="#modalUpgrade">
-              Upgrade
-            </button>
+            <span class="plus">+</span>
+          </button>
+          <div class="faq-body">
+            <p>A beállítás tipikusan 10–20 perc. Ha kell, adunk sablonokat és demo adatokat is.</p>
           </div>
-          <div class="progress mt-2" role="progressbar" aria-label="Storage progress" aria-valuenow="31" aria-valuemin="0" aria-valuemax="100" style="height: 10px;">
-            <div class="progress-bar" style="width: 31%"></div>
+
+          <button class="faq-item" type="button">
+            <div>
+              <strong>Lehet foglalót/előleget kérni?</strong>
+              <p class="muted">Igen, Pro csomagban opció.</p>
+            </div>
+            <span class="plus">+</span>
+          </button>
+          <div class="faq-body">
+            <p>Igen. Beállítható fix összeg vagy százalék. (A fizetési szolgáltató integrációtól függ.)</p>
+          </div>
+
+          <button class="faq-item" type="button">
+            <div>
+              <strong>Mi van, ha nincs weboldalam?</strong>
+              <p class="muted">Nem gond: kapsz foglalási oldalt.</p>
+            </div>
+            <span class="plus">+</span>
+          </button>
+          <div class="faq-body">
+            <p>Kapsz saját foglalási linket, amit Instagram bio-ba, Google profilra, Facebookra bárhova kitehetsz.</p>
+          </div>
+
+          <button class="faq-item" type="button">
+            <div>
+              <strong>Van próbaidő?</strong>
+              <p class="muted">Igen, demo / próbaverzió.</p>
+            </div>
+            <span class="plus">+</span>
+          </button>
+          <div class="faq-body">
+            <p>Igen. A demo kérésnél elküldjük a hozzáférést és a kezdő beállításokat.</p>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="mt-3 bg-card p-3 rounded-xl">
-        <div class="d-flex align-items-start justify-content-between">
-          <div>
-            <div class="fw-bold">Tip of the day</div>
-            <div class="text-muted-2 small">Készíts “onboarding” checklistet az első 10 userhez.</div>
-          </div>
-          <i class="bi bi-lightbulb text-warning"></i>
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container footer-grid">
+        <div>
+          <a class="brand foot" href="#top">
+            <span class="brand-mark"></span>
+            <span class="brand-text">BeautyOS</span>
+          </a>
+          <p class="muted">
+            Foglalás, vendégkezelés, automatizálás – szépség vállalkozásoknak.
+          </p>
         </div>
-        <hr class="soft my-3">
-        <div class="d-flex gap-2">
-          <button class="btn btn-sm btn-ghost rounded-lg flex-grow-1" id="btnCopyTip"><i class="bi bi-clipboard me-1"></i>Másol</button>
-          <button class="btn btn-sm btn-accent rounded-lg flex-grow-1" id="btnNewTip"><i class="bi bi-arrow-repeat me-1"></i>Új tipp</button>
+
+        <div>
+          <h4>Termék</h4>
+          <a href="#features">Funkciók</a>
+          <a href="#pricing">Árazás</a>
+          <a href="#demo">Demo</a>
+        </div>
+
+        <div>
+          <h4>Cég</h4>
+          <a href="#">Rólunk</a>
+          <a href="#">Kapcsolat</a>
+          <a href="#">Állás</a>
+        </div>
+
+        <div>
+          <h4>Jogi</h4>
+          <a href="#">Adatvédelem</a>
+          <a href="#">ÁSZF</a>
+          <a href="#">Cookie</a>
         </div>
       </div>
-    </aside>
 
-    <!-- ===================================================
-         MAIN CONTENT
-         =================================================== -->
-    <main class="app-main">
-      <!-- =================================================
-           HERO / HEADER AREA
-           ================================================= -->
-      <section id="secDashboard" class="container-fluid px-0">
-        <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-3">
-          <div>
-            <div class="d-flex align-items-center gap-2">
-              <h1 class="h3 mb-0 fw-bold">Dashboard</h1>
-              <span class="badge badge-accent rounded-pill">Live</span>
-              <span class="badge badge-soft rounded-pill d-none d-md-inline-flex">v0.1</span>
-            </div>
-            <div class="text-muted-2 mt-1">Áttekintés: bevétel, aktivitás, churn, projektek, support.</div>
-          </div>
-
-          <div class="d-flex flex-wrap gap-2">
-            <button class="btn btn-ghost rounded-lg" id="btnRefresh">
-              <i class="bi bi-arrow-clockwise me-1"></i>Frissítés
-            </button>
-            <button class="btn btn-accent rounded-lg" data-bs-toggle="modal" data-bs-target="#modalNewProject">
-              <i class="bi bi-folder-plus me-1"></i>Új projekt
-            </button>
-            <button class="btn btn-ghost rounded-lg" data-bs-toggle="modal" data-bs-target="#modalExport">
-              <i class="bi bi-download me-1"></i>Export
-            </button>
-          </div>
-        </div>
-
-        <hr class="soft my-4">
-
-        <!-- =================================================
-             KPI ROW
-             ================================================= -->
-        <div class="row g-3">
-          <div class="col-12 col-md-6 col-xl-3">
-            <div class="bg-card kpi">
-              <div class="d-flex align-items-start justify-content-between">
-                <div>
-                  <h6 class="mb-1">MRR</h6>
-                  <div class="value" id="kpiMrr">€ 3,240</div>
-                  <div class="delta"><span class="badge badge-success rounded-pill me-1">+8.4%</span><span class="text-muted-2">elmúlt 30 nap</span></div>
-                </div>
-                <div class="kpi-icon">
-                  <i class="bi bi-currency-euro"></i>
-                </div>
-              </div>
-              <div class="mt-3">
-                <div class="small text-muted-2">Cél: € 5,000</div>
-                <div class="progress mt-2" style="height: 10px;">
-                  <div class="progress-bar" style="width: 64%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-md-6 col-xl-3">
-            <div class="bg-card kpi">
-              <div class="d-flex align-items-start justify-content-between">
-                <div>
-                  <h6 class="mb-1">Aktív userek</h6>
-                  <div class="value" id="kpiActive">128</div>
-                  <div class="delta"><span class="badge badge-success rounded-pill me-1">+12</span><span class="text-muted-2">ezen a héten</span></div>
-                </div>
-                <div class="kpi-icon">
-                  <i class="bi bi-people"></i>
-                </div>
-              </div>
-              <div class="mt-3 d-flex align-items-center justify-content-between">
-                <div class="small text-muted-2">DAU/MAU</div>
-                <div class="fw-bold">18%</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-md-6 col-xl-3">
-            <div class="bg-card kpi">
-              <div class="d-flex align-items-start justify-content-between">
-                <div>
-                  <h6 class="mb-1">Churn</h6>
-                  <div class="value" id="kpiChurn">2.1%</div>
-                  <div class="delta"><span class="badge badge-warning rounded-pill me-1">+0.3%</span><span class="text-muted-2">elmúlt 30 nap</span></div>
-                </div>
-                <div class="kpi-icon">
-                  <i class="bi bi-arrow-repeat"></i>
-                </div>
-              </div>
-              <div class="mt-3 d-flex align-items-center justify-content-between">
-                <div class="small text-muted-2">Target</div>
-                <div class="fw-bold">&lt; 2.0%</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-md-6 col-xl-3">
-            <div class="bg-card kpi">
-              <div class="d-flex align-items-start justify-content-between">
-                <div>
-                  <h6 class="mb-1">Open tickets</h6>
-                  <div class="value" id="kpiTickets">17</div>
-                  <div class="delta"><span class="badge badge-danger rounded-pill me-1">+4</span><span class="text-muted-2">24 órában</span></div>
-                </div>
-                <div class="kpi-icon">
-                  <i class="bi bi-life-preserver"></i>
-                </div>
-              </div>
-              <div class="mt-3 d-flex align-items-center justify-content-between">
-                <div class="small text-muted-2">SLA</div>
-                <div class="fw-bold">96%</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- =================================================
-             Charts + Activity
-             ================================================= -->
-        <div class="row g-3 mt-1">
-          <div class="col-12 col-xl-8" id="secAnalytics">
-            <div class="bg-card p-3 p-lg-4">
-              <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2">
-                <div>
-                  <div class="fw-bold fs-5">Bevétel & aktiváció</div>
-                  <div class="text-muted-2 small">MRR, trial → paid, új accountok</div>
-                </div>
-                <div class="d-flex flex-wrap gap-2">
-                  <select class="form-select form-select-sm" id="rangeSelect" style="max-width: 180px;">
-                    <option value="7">Utolsó 7 nap</option>
-                    <option value="30" selected>Utolsó 30 nap</option>
-                    <option value="90">Utolsó 90 nap</option>
-                  </select>
-                  <button class="btn btn-sm btn-ghost rounded-lg" id="btnRandomize">
-                    <i class="bi bi-shuffle me-1"></i>Random demo
-                  </button>
-                  <button class="btn btn-sm btn-accent rounded-lg" id="btnSaveView">
-                    <i class="bi bi-bookmark me-1"></i>Mentés
-                  </button>
-                </div>
-              </div>
-
-              <hr class="soft my-3">
-
-              <div class="chart-wrap">
-                <canvas id="chartRevenue" aria-label="Revenue chart" role="img"></canvas>
-              </div>
-
-              <hr class="soft my-3">
-
-              <div class="row g-3">
-                <div class="col-12 col-md-4">
-                  <div class="bg-card-2 p-3 rounded-xl">
-                    <div class="d-flex align-items-center justify-content-between">
-                      <div class="small text-muted-2">Trial → Paid</div>
-                      <span class="badge badge-success rounded-pill">+3.2%</span>
-                    </div>
-                    <div class="fw-bold fs-4 mt-1" id="trialPaid">24%</div>
-                    <div class="small text-muted-2">optimális cél: 20–30%</div>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md-4">
-                  <div class="bg-card-2 p-3 rounded-xl">
-                    <div class="d-flex align-items-center justify-content-between">
-                      <div class="small text-muted-2">Új accountok</div>
-                      <span class="badge badge-accent rounded-pill">+18</span>
-                    </div>
-                    <div class="fw-bold fs-4 mt-1" id="newAccounts">62</div>
-                    <div class="small text-muted-2">forrás: organic + referral</div>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md-4">
-                  <div class="bg-card-2 p-3 rounded-xl">
-                    <div class="d-flex align-items-center justify-content-between">
-                      <div class="small text-muted-2">ARPA</div>
-                      <span class="badge badge-warning rounded-pill">-1.1%</span>
-                    </div>
-                    <div class="fw-bold fs-4 mt-1" id="arpa">€ 25.3</div>
-                    <div class="small text-muted-2">átlag bevétel / account</div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <div class="col-12 col-xl-4">
-            <div class="bg-card p-3 p-lg-4">
-              <div class="d-flex align-items-start justify-content-between">
-                <div>
-                  <div class="fw-bold fs-5">Aktivitás feed</div>
-                  <div class="text-muted-2 small">Valós idejű események (demo)</div>
-                </div>
-                <button class="btn btn-sm btn-ghost rounded-lg" id="btnAddEvent">
-                  <i class="bi bi-plus-lg me-1"></i>Esemény
-                </button>
-              </div>
-
-              <hr class="soft my-3">
-
-              <div id="activityFeed" class="d-flex flex-column gap-2">
-                <!-- JS tölti -->
-              </div>
-
-              <hr class="soft my-3">
-
-              <div class="d-flex gap-2">
-                <button class="btn btn-sm btn-ghost rounded-lg flex-grow-1" id="btnClearFeed">
-                  <i class="bi bi-trash me-1"></i>Törlés
-                </button>
-                <button class="btn btn-sm btn-accent rounded-lg flex-grow-1" id="btnExportFeed">
-                  <i class="bi bi-filetype-json me-1"></i>JSON
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- =================================================
-             Customers + Table
-             ================================================= -->
-        <div class="row g-3 mt-1" id="secCustomers">
-          <div class="col-12 col-xl-7">
-            <div class="bg-card p-3 p-lg-4">
-              <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2">
-                <div>
-                  <div class="fw-bold fs-5">Ügyfelek</div>
-                  <div class="text-muted-2 small">szűrés, keresés, státusz, MRR</div>
-                </div>
-                <div class="d-flex flex-wrap gap-2">
-                  <input id="customerFilter" class="form-control form-control-sm" placeholder="Szűrés név / email / státusz..." style="max-width: 280px;">
-                  <select id="statusFilter" class="form-select form-select-sm" style="max-width: 180px;">
-                    <option value="">Összes státusz</option>
-                    <option value="active">Aktív</option>
-                    <option value="trial">Trial</option>
-                    <option value="paused">Paused</option>
-                    <option value="churned">Churned</option>
-                  </select>
-                  <button class="btn btn-sm btn-accent rounded-lg" data-bs-toggle="modal" data-bs-target="#modalAddCustomer">
-                    <i class="bi bi-person-plus me-1"></i>Új ügyfél
-                  </button>
-                </div>
-              </div>
-
-              <hr class="soft my-3">
-
-              <div class="table-responsive">
-                <table class="table table-sm table-hover table-striped table-darkish align-middle mb-0" id="customersTable">
-                  <thead>
-                    <tr>
-                      <th>Ügyfél</th>
-                      <th>Csomag</th>
-                      <th>Státusz</th>
-                      <th class="text-end">MRR</th>
-                      <th class="text-end">Akció</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <!-- sok sor, hogy hosszú legyen -->
-                    <tr>
-                      <td>
-                        <div class="d-flex align-items-center gap-2">
-                          <span class="badge badge-soft rounded-circle" style="width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;">A</span>
-                          <div>
-                            <div class="fw-semibold">Alfa Studio</div>
-                            <div class="text-muted-2 small">hello@alfastudio.hu</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td><span class="badge badge-accent rounded-pill">Pro</span></td>
-                      <td><span class="badge badge-success rounded-pill" data-status="active">Aktív</span></td>
-                      <td class="text-end">€ 49</td>
-                      <td class="text-end">
-                        <button class="btn btn-sm btn-ghost rounded-lg" data-bs-toggle="modal" data-bs-target="#modalCustomer" data-customer="Alfa Studio">
-                          Megnyit
-                        </button>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div class="d-flex align-items-center gap-2">
-                          <span class="badge badge-soft rounded-circle" style="width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;">B</span>
-                          <div>
-                            <div class="fw-semibold">Beta Nails</div>
-                            <div class="text-muted-2 small">contact@betanails.com</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td><span class="badge badge-soft rounded-pill">Basic</span></td>
-                      <td><span class="badge badge-warning rounded-pill" data-status="trial">Trial</span></td>
-                      <td class="text-end">€ 0</td>
-                      <td class="text-end">
-                        <button class="btn btn-sm btn-ghost rounded-lg" data-bs-toggle="modal" data-bs-target="#modalCustomer" data-customer="Beta Nails">
-                          Megnyit
-                        </button>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>
-                        <div class="d-flex align-items-center gap-2">
-                          <span class="badge badge-soft rounded-circle" style="width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;">C</span>
-                          <div>
-                            <div class="fw-semibold">Citrus Barbers</div>
-                            <div class="text-muted-2 small">team@citrusbarbers.io</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td><span class="badge badge-accent rounded-pill">Pro</span></td>
-                      <td><span class="badge badge-danger rounded-pill" data-status="paused">Paused</span></td>
-                      <td class="text-end">€ 29</td>
-                      <td class="text-end">
-                        <button class="btn btn-sm btn-ghost rounded-lg" data-bs-toggle="modal" data-bs-target="#modalCustomer" data-customer="Citrus Barbers">
-                          Megnyit
-                        </button>
-                      </td>
-                    </tr>
-
-                    <!-- extra sorok: (direkt hosszú) -->
-                    <tr><td><div class="fw-semibold">Delta Spa</div><div class="text-muted-2 small">delta@spa.hu</div></td><td><span class="badge badge-soft rounded-pill">Basic</span></td><td><span class="badge badge-success rounded-pill" data-status="active">Aktív</span></td><td class="text-end">€ 19</td><td class="text-end"><button class="btn btn-sm btn-ghost rounded-lg" data-bs-toggle="modal" data-bs-target="#modalCustomer" data-customer="Delta Spa">Megnyit</button></td></tr>
-                    <tr><td><div class="fw-semibold">Echo Massage</div><div class="text-muted-2 small">echo@massage.eu</div></td><td><span class="badge badge-accent rounded-pill">Pro</span></td><td><span class="badge badge-success rounded-pill" data-status="active">Aktív</span></td><td class="text-end">€ 49</td><td class="text-end"><button class="btn btn-sm btn-ghost rounded-lg" data-bs-toggle="modal" data-bs-target="#modalCustomer" data-customer="Echo Massage">Megnyit</button></td></tr>
-                    <tr><td><div class="fw-semibold">Foxtrot Clinic</div><div class="text-muted-2 small">info@foxtrot.clinic</div></td><td><span class="badge badge-soft rounded-pill">Basic</span></td><td><span class="badge badge-warning rounded-pill" data-status="trial">Trial</span></td><td class="text-end">€ 0</td><td class="text-end"><button class="btn btn-sm btn-ghost rounded-lg" data-bs-toggle="modal" data-bs-target="#modalCustomer" data-customer="Foxtrot Clinic">Megnyit</button></td></tr>
-                    <tr><td><div class="fw-semibold">Gamma Beauty</div><div class="text-muted-2 small">hello@gammabeauty.com</div></td><td><span class="badge badge-accent rounded-pill">Pro</span></td><td><span class="badge badge-danger rounded-pill" data-status="churned">Churned</span></td><td class="text-end">€ 0</td><td class="text-end"><button class="btn btn-sm btn-ghost rounded-lg" data-bs-toggle="modal" data-bs-target="#modalCustomer" data-customer="Gamma Beauty">Megnyit</button></td></tr>
-                    <tr><td><div class="fw-semibold">Hotel Salon</div><div class="text-muted-2 small">hotel@salon.hu</div></td><td><span class="badge badge-soft rounded-pill">Basic</span></td><td><span class="badge badge-success rounded-pill" data-status="active">Aktív</span></td><td class="text-end">€ 19</td><td class="text-end"><button class="btn btn-sm btn-ghost rounded-lg" data-bs-toggle="modal" data-bs-target="#modalCustomer" data-customer="Hotel Salon">Megnyit</button></td></tr>
-
-                    <!-- még több sor (tömeg) -->
-                    <tr><td><div class="fw-semibold">Iris Nails</div><div class="text-muted-2 small">iris@nails.hu</div></td><td><span class="badge badge-soft rounded-pill">Basic</span></td><td><span class="badge badge-warning rounded-pill" data-status="trial">Trial</span></td><td class="text-end">€ 0</td><td class="text-end"><button class="btn btn-sm btn-ghost rounded-lg" data-bs-toggle="modal" data-bs-target="#modalCustomer" data-customer="Iris Nails">Megnyit</button></td></tr>
-                    <tr><td><div class="fw-semibold">Juno Barbers</div><div class="text-muted-2 small">juno@barbers.com</div></td><td><span class="badge badge-accent rounded-pill">Pro</span></td><td><span class="badge badge-success rounded-pill" data-status="active">Aktív</span></td><td class="text-end">€ 49</td><td class="text-end"><button class="btn btn-sm btn-ghost rounded-lg" data-bs-toggle="modal" data-bs-target="#modalCustomer" data-customer="Juno Barbers">Megnyit</button></td></tr>
-                    <tr><td><div class="fw-semibold">Kappa Studio</div><div class="text-muted-2 small">kappa@studio.io</div></td><td><span class="badge badge-accent rounded-pill">Pro</span></td><td><span class="badge badge-danger rounded-pill" data-status="paused">Paused</span></td><td class="text-end">€ 29</td><td class="text-end"><button class="btn btn-sm btn-ghost rounded-lg" data-bs-toggle="modal" data-bs-target="#modalCustomer" data-customer="Kappa Studio">Megnyit</button></td></tr>
-                    <tr><td><div class="fw-semibold">Lambda Spa</div><div class="text-muted-2 small">lambda@spa.com</div></td><td><span class="badge badge-soft rounded-pill">Basic</span></td><td><span class="badge badge-success rounded-pill" data-status="active">Aktív</span></td><td class="text-end">€ 19</td><td class="text-end"><button class="btn btn-sm btn-ghost rounded-lg" data-bs-toggle="modal" data-bs-target="#modalCustomer" data-customer="Lambda Spa">Megnyit</button></td></tr>
-                    <tr><td><div class="fw-semibold">Mu Clinic</div><div class="text-muted-2 small">mu@clinic.hu</div></td><td><span class="badge badge-soft rounded-pill">Basic</span></td><td><span class="badge badge-danger rounded-pill" data-status="churned">Churned</span></td><td class="text-end">€ 0</td><td class="text-end"><button class="btn btn-sm btn-ghost rounded-lg" data-bs-toggle="modal" data-bs-target="#modalCustomer" data-customer="Mu Clinic">Megnyit</button></td></tr>
-
-                    <!-- A maradékot JS is tudja szaporítani demo módban -->
-                  </tbody>
-                </table>
-              </div>
-
-              <hr class="soft my-3">
-
-              <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2">
-                <div class="text-muted-2 small">
-                  Tipp: nyomj <span class="badge badge-soft">/</span> a kereséshez, <span class="badge badge-soft">Ctrl</span>+<span class="badge badge-soft">K</span> gyorsparancs.
-                </div>
-                <div class="d-flex gap-2">
-                  <button class="btn btn-sm btn-ghost rounded-lg" id="btnPrevPage"><i class="bi bi-chevron-left"></i></button>
-                  <span class="badge badge-soft align-self-center" id="pageInfo">1 / 1</span>
-                  <button class="btn btn-sm btn-ghost rounded-lg" id="btnNextPage"><i class="bi bi-chevron-right"></i></button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-xl-5" id="secBilling">
-            <div class="bg-card p-3 p-lg-4">
-              <div class="d-flex align-items-start justify-content-between">
-                <div>
-                  <div class="fw-bold fs-5">Billing snapshot</div>
-                  <div class="text-muted-2 small">kintlévőség, számlák, fizetések</div>
-                </div>
-                <button class="btn btn-sm btn-accent rounded-lg" data-bs-toggle="modal" data-bs-target="#modalNewInvoice">
-                  <i class="bi bi-receipt me-1"></i>Számla
-                </button>
-              </div>
-
-              <hr class="soft my-3">
-
-              <div class="row g-3">
-                <div class="col-12 col-md-6">
-                  <div class="bg-card-2 p-3 rounded-xl">
-                    <div class="text-muted-2 small">Kintlévőség</div>
-                    <div class="fw-bold fs-4 mt-1" id="outstanding">€ 620</div>
-                    <div class="text-muted-2 small">8 számla</div>
-                  </div>
-                </div>
-                <div class="col-12 col-md-6">
-                  <div class="bg-card-2 p-3 rounded-xl">
-                    <div class="text-muted-2 small">Sikeres fizetések</div>
-                    <div class="fw-bold fs-4 mt-1" id="paymentsOk">142</div>
-                    <div class="text-muted-2 small">elmúlt 30 nap</div>
-                  </div>
-                </div>
-              </div>
-
-              <hr class="soft my-3">
-
-              <div class="chart-wrap" style="height:220px;">
-                <canvas id="chartInvoices"></canvas>
-              </div>
-
-              <hr class="soft my-3">
-
-              <div class="d-flex align-items-center justify-content-between">
-                <div class="text-muted-2 small">Auto-collect</div>
-                <div class="form-check form-switch m-0">
-                  <input class="form-check-input" type="checkbox" role="switch" id="autoCollect" checked>
-                </div>
-              </div>
-
-              <div class="mt-3">
-                <button class="btn btn-ghost rounded-lg w-100" data-bs-toggle="modal" data-bs-target="#modalPlans">
-                  <i class="bi bi-boxes me-1"></i>Csomagok megtekintése
-                </button>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-        <!-- =================================================
-             Projects / Kanban
-             ================================================= -->
-        <div class="row g-3 mt-1" id="secProjects">
-          <div class="col-12">
-            <div class="bg-card p-3 p-lg-4">
-              <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2">
-                <div>
-                  <div class="fw-bold fs-5">Projektek (mini kanban)</div>
-                  <div class="text-muted-2 small">drag & drop demo + gyors státusz</div>
-                </div>
-                <div class="d-flex flex-wrap gap-2">
-                  <button class="btn btn-sm btn-ghost rounded-lg" id="btnResetBoard"><i class="bi bi-arrow-counterclockwise me-1"></i>Reset</button>
-                  <button class="btn btn-sm btn-accent rounded-lg" data-bs-toggle="modal" data-bs-target="#modalNewProject"><i class="bi bi-plus-lg me-1"></i>Új</button>
-                </div>
-              </div>
-
-              <hr class="soft my-3">
-
-              <div class="row g-3" id="kanbanBoard">
-                <div class="col-12 col-md-4">
-                  <div class="bg-card-2 p-3 rounded-xl h-100">
-                    <div class="d-flex align-items-center justify-content-between">
-                      <div class="fw-bold">Todo</div>
-                      <span class="badge badge-soft rounded-pill" id="countTodo">0</span>
-                    </div>
-                    <div class="text-muted-2 small">ötletek, backlog</div>
-
-                    <hr class="soft my-3">
-
-                    <div class="d-flex flex-column gap-2 kanban-col" data-col="todo"></div>
-
-                    <button class="btn btn-sm btn-ghost rounded-lg w-100 mt-3" data-col-add="todo">
-                      <i class="bi bi-plus-lg me-1"></i>Kártya
-                    </button>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md-4">
-                  <div class="bg-card-2 p-3 rounded-xl h-100">
-                    <div class="d-flex align-items-center justify-content-between">
-                      <div class="fw-bold">Doing</div>
-                      <span class="badge badge-soft rounded-pill" id="countDoing">0</span>
-                    </div>
-                    <div class="text-muted-2 small">folyamatban</div>
-
-                    <hr class="soft my-3">
-
-                    <div class="d-flex flex-column gap-2 kanban-col" data-col="doing"></div>
-
-                    <button class="btn btn-sm btn-ghost rounded-lg w-100 mt-3" data-col-add="doing">
-                      <i class="bi bi-plus-lg me-1"></i>Kártya
-                    </button>
-                  </div>
-                </div>
-
-                <div class="col-12 col-md-4">
-                  <div class="bg-card-2 p-3 rounded-xl h-100">
-                    <div class="d-flex align-items-center justify-content-between">
-                      <div class="fw-bold">Done</div>
-                      <span class="badge badge-soft rounded-pill" id="countDone">0</span>
-                    </div>
-                    <div class="text-muted-2 small">kész</div>
-
-                    <hr class="soft my-3">
-
-                    <div class="d-flex flex-column gap-2 kanban-col" data-col="done"></div>
-
-                    <button class="btn btn-sm btn-ghost rounded-lg w-100 mt-3" data-col-add="done">
-                      <i class="bi bi-plus-lg me-1"></i>Kártya
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <hr class="soft my-3">
-
-              <div class="row g-3">
-                <div class="col-12 col-lg-6">
-                  <div class="bg-card-2 p-3 rounded-xl">
-                    <div class="fw-bold">Release checklist</div>
-                    <div class="text-muted-2 small">demo feladatlista (localStorage)</div>
-                    <hr class="soft my-3">
-                    <div id="checklist" class="d-flex flex-column gap-2"></div>
-                    <button class="btn btn-sm btn-accent rounded-lg mt-3" id="btnAddChecklistItem">
-                      <i class="bi bi-plus-lg me-1"></i>Új checklist elem
-                    </button>
-                  </div>
-                </div>
-
-                <div class="col-12 col-lg-6" id="secSupport">
-                  <div class="bg-card-2 p-3 rounded-xl">
-                    <div class="d-flex align-items-start justify-content-between">
-                      <div>
-                        <div class="fw-bold">Support SLA</div>
-                        <div class="text-muted-2 small">prioritás, csatorna, válaszidő</div>
-                      </div>
-                      <button class="btn btn-sm btn-ghost rounded-lg" data-bs-toggle="modal" data-bs-target="#modalNewTicket">
-                        <i class="bi bi-life-preserver me-1"></i>Ticket
-                      </button>
-                    </div>
-                    <hr class="soft my-3">
-                    <div class="row g-3">
-                      <div class="col-6">
-                        <div class="text-muted-2 small">Median response</div>
-                        <div class="fw-bold fs-4" id="medianResponse">1h 12m</div>
-                      </div>
-                      <div class="col-6">
-                        <div class="text-muted-2 small">SLA met</div>
-                        <div class="fw-bold fs-4" id="slaMet">96%</div>
-                      </div>
-                    </div>
-
-                    <hr class="soft my-3">
-
-                    <div class="d-flex align-items-center justify-content-between">
-                      <div class="text-muted-2 small">Email alerts</div>
-                      <div class="form-check form-switch m-0">
-                        <input class="form-check-input" type="checkbox" role="switch" id="emailAlerts" checked>
-                      </div>
-                    </div>
-
-                    <div class="mt-3">
-                      <div class="text-muted-2 small">Nyitott ticketek</div>
-                      <div class="table-responsive mt-2">
-                        <table class="table table-sm table-darkish mb-0">
-                          <thead>
-                            <tr>
-                              <th>ID</th>
-                              <th>Tárgy</th>
-                              <th>Prioritás</th>
-                              <th class="text-end">Státusz</th>
-                            </tr>
-                          </thead>
-                          <tbody id="ticketsTableBody">
-                            <!-- JS tölti -->
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-        <!-- =================================================
-             Automations / Settings / Team sections
-             ================================================= -->
-        <div class="row g-3 mt-1">
-          <div class="col-12 col-xl-4" id="secAutomations">
-            <div class="bg-card p-3 p-lg-4">
-              <div class="fw-bold fs-5">Automatizmusok</div>
-              <div class="text-muted-2 small">webhook, email, onboarding</div>
-              <hr class="soft my-3">
-
-              <div class="d-flex flex-column gap-3">
-                <div class="bg-card-2 p-3 rounded-xl">
-                  <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                      <div class="fw-semibold">Welcome email</div>
-                      <div class="text-muted-2 small">új regisztráció után</div>
-                    </div>
-                    <div class="form-check form-switch m-0">
-                      <input class="form-check-input" type="checkbox" role="switch" checked>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="bg-card-2 p-3 rounded-xl">
-                  <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                      <div class="fw-semibold">Trial reminder</div>
-                      <div class="text-muted-2 small">3. napon</div>
-                    </div>
-                    <div class="form-check form-switch m-0">
-                      <input class="form-check-input" type="checkbox" role="switch" checked>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="bg-card-2 p-3 rounded-xl">
-                  <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                      <div class="fw-semibold">Invoice chase</div>
-                      <div class="text-muted-2 small">lejárat előtt 48 órával</div>
-                    </div>
-                    <div class="form-check form-switch m-0">
-                      <input class="form-check-input" type="checkbox" role="switch">
-                    </div>
-                  </div>
-                </div>
-
-                <button class="btn btn-accent rounded-lg" id="btnRunAutomation">
-                  <i class="bi bi-lightning-charge me-1"></i>Futtatás (demo)
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-xl-4" id="secSettings">
-            <div class="bg-card p-3 p-lg-4">
-              <div class="fw-bold fs-5">Beállítások</div>
-              <div class="text-muted-2 small">színek, preferenciák, security</div>
-              <hr class="soft my-3">
-
-              <form id="settingsForm" class="d-flex flex-column gap-3">
-                <div>
-                  <label class="form-label text-muted-2">Cég neve</label>
-                  <input class="form-control" value="EXTOREI">
-                </div>
-
-                <div>
-                  <label class="form-label text-muted-2">Időzóna</label>
-                  <select class="form-select">
-                    <option selected>Europe/Budapest</option>
-                    <option>Europe/Vienna</option>
-                    <option>UTC</option>
-                  </select>
-                </div>
-
-                <div class="d-flex align-items-center justify-content-between">
-                  <div>
-                    <div class="fw-semibold">2FA</div>
-                    <div class="text-muted-2 small">extra védelem</div>
-                  </div>
-                  <div class="form-check form-switch m-0">
-                    <input class="form-check-input" type="checkbox" role="switch" id="toggle2fa">
-                  </div>
-                </div>
-
-                <div class="d-flex gap-2">
-                  <button class="btn btn-ghost rounded-lg flex-grow-1" type="button" id="btnResetSettings">
-                    Reset
-                  </button>
-                  <button class="btn btn-accent rounded-lg flex-grow-1" type="submit">
-                    Mentés
-                  </button>
-                </div>
-              </form>
-
-              <hr class="soft my-3">
-
-              <div class="text-muted-2 small">
-                Mentés localStorage-be (demo). Backendhez majd API.
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-xl-4" id="secTeam">
-            <div class="bg-card p-3 p-lg-4">
-              <div class="fw-bold fs-5">Team</div>
-              <div class="text-muted-2 small">szerepkörök, meghívók</div>
-              <hr class="soft my-3">
-
-              <div class="d-flex flex-column gap-2" id="teamList">
-                <!-- JS tölti -->
-              </div>
-
-              <hr class="soft my-3">
-
-              <button class="btn btn-accent rounded-lg w-100" data-bs-toggle="modal" data-bs-target="#modalInvite">
-                <i class="bi bi-person-plus me-1"></i>Meghívás
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
+      <div class="container foot-bottom">
+        <span>© 2026 BeautyOS</span>
+        <span class="muted">Design & Code: Extorei</span>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    // ===== Mobile menu =====
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+    const header = document.getElementById('header');
+
+    const openMenu = () => {
+      mobileNav.classList.add('open');
+      mobileNav.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      menuBtn.classList.add('active');
+    };
+    const closeMenu = () => {
+      mobileNav.classList.remove('open');
+      mobileNav.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = 'auto';
+      menuBtn.classList.remove('active');
+    };
+
+    menuBtn.addEventListener('click', () => {
+      mobileNav.classList.contains('open') ? closeMenu() : openMenu();
+    });
+
+    document.querySelectorAll('.m-link').forEach(a => {
+      a.addEventListener('click', closeMenu);
+    });
+
+    // Close on ESC
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileNav.classList.contains('open')) closeMenu();
+    });
+
+    // ===== Header hide/show (simple) =====
+    let lastY = 0;
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY || 0;
+      if (y > lastY && y > 120) header.classList.add('hide');
+      else header.classList.remove('hide');
+      lastY = y;
+    });
+
+    // ===== Smooth anchor =====
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const id = a.getAttribute('href');
+        if (!id || id === '#') return;
+        const el = document.querySelector(id);
+        if (!el) return;
+        e.preventDefault();
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // ===== Pricing toggle =====
+    const priceToggle = document.getElementById('priceToggle');
+    const amounts = document.querySelectorAll('.amount');
+    let yearly = false;
+
+    const formatHu = (n) => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    const renderPrices = () => {
+      amounts.forEach(a => {
+        const m = Number(a.dataset.month);
+        const y = Number(a.dataset.year);
+        a.textContent = formatHu(yearly ? y : m);
+        a.nextElementSibling.textContent = yearly ? 'Ft / hó (éves számlázás)' : 'Ft / hó';
+      });
+    };
+
+    priceToggle.addEventListener('click', () => {
+      yearly = !yearly;
+      priceToggle.classList.toggle('on', yearly);
+      renderPrices();
+    });
+    renderPrices();
+
+    // ===== FAQ accordion =====
+    const faqButtons = document.querySelectorAll('.faq-item');
+    faqButtons.forEach((btn, idx) => {
+      btn.addEventListener('click', () => {
+        const body = btn.nextElementSibling;
+        const open = body.classList.contains('open');
+        document.querySelectorAll('.faq-body').forEach(b => b.classList.remove('open'));
+        document.querySelectorAll('.faq-item .plus').forEach(p => p.textContent = '+');
+        if (!open) {
+          body.classList.add('open');
+          btn.querySelector('.plus').textContent = '–';
+        }
+      });
+    });
+
+    // ===== Demo form toast =====
+    const toast = (msg) => {
+      const t = document.createElement('div');
+      t.className = 'toast';
+      t.textContent = msg;
+      document.getElementById('toastWrap').appendChild(t);
+      requestAnimationFrame(() => t.classList.add('show'));
+      setTimeout(() => {
+        t.classList.remove('show');
+        setTimeout(() => t.remove(), 250);
+      }, 2200);
+    };
+
+    document.querySelectorAll('[data-toast]').forEach(btn => {
+      btn.addEventListener('click', () => toast(btn.dataset.toast));
+    });
+
+    document.getElementById('demoForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('demoEmail').value.trim();
+      if (!email) return;
+      toast('Köszi! A demo linket elküldtük emailben. (demo)');
+      e.target.reset();
+    });
+  </script>
 </body>
 </html>
