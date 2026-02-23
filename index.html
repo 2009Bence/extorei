@@ -13,45 +13,74 @@
 
   <link rel="stylesheet" href="styles.css" />
 </head>
+<!DOCTYPE html>
+<html lang="hu" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>BeautyOS – SaaS szépség vállalkozásoknak</title>
+  <meta name="description" content="Foglalás, emlékeztetők, vendégkezelés és marketing – fodrászoknak, körmösöknek, kozmetikáknak, masszázsoknak." />
+  <meta name="theme-color" content="#f6f7fb" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
 
 <body>
-  <!-- Noise / background fx -->
-  <div class="noise"></div>
-  <div class="bg-orb orb-1"></div>
-  <div class="bg-orb orb-2"></div>
+  <!-- Background FX -->
+  <div class="bg">
+    <div class="orb o1"></div>
+    <div class="orb o2"></div>
+    <div class="orb o3"></div>
+    <div class="noise"></div>
+    <div class="gridlines"></div>
+  </div>
+
+  <!-- Toasts -->
+  <div class="toasts" id="toasts" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Header -->
   <header class="header" id="header">
     <div class="container header-inner">
-      <a class="brand" href="#top">
-        <span class="brand-mark"></span>
-        <span class="brand-text">BeautyOS</span>
+      <a class="brand" href="#top" aria-label="BeautyOS">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">BeautyOS</span>
+        <span class="brand-sub">Salon SaaS</span>
       </a>
 
-      <nav class="nav">
+      <nav class="nav" aria-label="Fő navigáció">
         <a href="#features">Funkciók</a>
         <a href="#how">Hogyan működik</a>
         <a href="#pricing">Árazás</a>
         <a href="#faq">GYIK</a>
       </nav>
 
-      <div class="header-actions">
+      <div class="hdr-actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="Téma váltás (Light/Dark)">
+          <span class="i-sun" aria-hidden="true"></span>
+          <span class="i-moon" aria-hidden="true"></span>
+        </button>
+
         <a class="btn btn-ghost desktop-only" href="#demo">Demo</a>
         <a class="btn btn-primary desktop-only" href="login.html">Belépés</a>
-        <button class="icon-btn mobile-only" id="menuBtn" aria-label="Menü">
+
+        <button class="burger mobile-only" id="menuBtn" type="button" aria-label="Menü">
           <span></span><span></span>
         </button>
       </div>
     </div>
 
-    <!-- Mobile nav -->
-    <div class="mobile-nav" id="mobileNav" aria-hidden="true">
-      <div class="mobile-nav-inner">
-        <a href="#features" class="m-link">Funkciók</a>
-        <a href="#how" class="m-link">Hogyan működik</a>
-        <a href="#pricing" class="m-link">Árazás</a>
-        <a href="#faq" class="m-link">GYIK</a>
-        <div class="m-actions">
+    <!-- Mobile menu -->
+    <div class="mnav" id="mnav" aria-hidden="true">
+      <div class="mnav-inner">
+        <a class="mnav-link" href="#features">Funkciók</a>
+        <a class="mnav-link" href="#how">Hogyan működik</a>
+        <a class="mnav-link" href="#pricing">Árazás</a>
+        <a class="mnav-link" href="#faq">GYIK</a>
+        <div class="mnav-actions">
           <a class="btn btn-ghost" href="#demo">Demo</a>
           <a class="btn btn-primary" href="login.html">Belépés</a>
         </div>
@@ -65,114 +94,126 @@
       <div class="container hero-grid">
         <div class="hero-copy">
           <div class="pill">
-            <span class="dot"></span>
-            <span>All-in-one SaaS szépség vállalkozásoknak</span>
+            <span class="dot" aria-hidden="true"></span>
+            <span><b>All-in-one</b> rendszer szépségiparnak</span>
           </div>
 
           <h1 class="h1">
-            Időpontfoglalás, vendégkezelés és
-            <span class="accent">automatikus emlékeztetők</span>
-            – egy helyen.
+            Töltsd fel a naptárad.
+            <span class="grad">Csökkentsd a no-show-t.</span>
+            Kezeld profin a vendégeidet.
           </h1>
 
           <p class="lead">
-            Fodrász, körmös, kozmetika, masszázs: csökkentsd a no-show-t,
-            töltsd fel a naptárad, és kezeld profin a vendégeidet.
+            Online időpontfoglalás, automata SMS/Email emlékeztetők, vendég CRM és marketing –
+            fodrászoknak, körmösöknek, kozmetikáknak, masszázsoknak.
           </p>
 
-          <div class="hero-cta">
-            <a class="btn btn-primary" href="#pricing">Kezdés 2 perc alatt</a>
-            <a class="btn btn-ghost" href="#demo">Nézd meg a demót</a>
+          <div class="cta">
+            <a class="btn btn-primary" href="#pricing">Kezdjük</a>
+            <button class="btn btn-ghost" type="button" id="copyLinkBtn" data-toast="Foglalási link másolva!">
+              Foglalási link demo
+            </button>
           </div>
 
           <div class="trust">
             <div class="trust-item">
-              <strong>24/7</strong><span>online foglalás</span>
+              <strong>2 perc</strong>
+              <span>setup</span>
             </div>
             <div class="trust-item">
-              <strong>-30%</strong><span>no-show cél</span>
+              <strong>24/7</strong>
+              <span>foglalás</span>
             </div>
             <div class="trust-item">
-              <strong>GDPR</strong><span>alapok</span>
+              <strong>-30%</strong>
+              <span>no-show cél</span>
+            </div>
+            <div class="trust-item">
+              <strong>GDPR</strong>
+              <span>alapok</span>
             </div>
           </div>
         </div>
 
-        <div class="hero-card">
-          <div class="mock-top">
-            <div class="dots"><span></span><span></span><span></span></div>
-            <div class="mock-title">BeautyOS / Overview</div>
-            <div class="mock-chip">LIVE</div>
+        <div class="hero-showcase">
+          <div class="shot">
+            <div class="shot-top">
+              <div class="shot-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+              <div class="shot-title">BeautyOS · Overview</div>
+              <div class="shot-chip">LIVE</div>
+            </div>
+
+            <div class="shot-body">
+              <div class="kpi-row">
+                <div class="kpi">
+                  <div class="kpi-l">Mai foglalás</div>
+                  <div class="kpi-v">18</div>
+                  <div class="kpi-m">+3 várólista</div>
+                </div>
+                <div class="kpi">
+                  <div class="kpi-l">Bevétel</div>
+                  <div class="kpi-v">248 900 Ft</div>
+                  <div class="kpi-m">+12% tegnaphoz</div>
+                </div>
+              </div>
+
+              <div class="list">
+                <div class="row">
+                  <span class="t t1">14:30</span>
+                  <div class="row-main">
+                    <strong>Kovács Anna</strong>
+                    <span>Gél lakk · 60 perc</span>
+                  </div>
+                  <span class="st ok">megerősítve</span>
+                </div>
+                <div class="row">
+                  <span class="t t2">15:15</span>
+                  <div class="row-main">
+                    <strong>Nagy Péter</strong>
+                    <span>Hajvágás · 45 perc</span>
+                  </div>
+                  <span class="st info">emlékeztető kint</span>
+                </div>
+                <div class="row">
+                  <span class="t t3">16:00</span>
+                  <div class="row-main">
+                    <strong>Szabó Eszter</strong>
+                    <span>Kozmetika · 75 perc</span>
+                  </div>
+                  <span class="st idle">fizetés után</span>
+                </div>
+              </div>
+
+              <div class="mini-actions">
+                <button class="mini" type="button" data-toast="SMS sablon mentve!">SMS sablon</button>
+                <button class="mini" type="button" data-toast="Email sablon mentve!">Email sablon</button>
+                <button class="mini primary" type="button" data-toast="Új időpont létrehozva!">Új időpont</button>
+              </div>
+            </div>
           </div>
 
-          <div class="mock-body">
-            <div class="mock-kpis">
-              <div class="kpi">
-                <div class="kpi-label">Mai foglalások</div>
-                <div class="kpi-value">18</div>
-                <div class="kpi-meta">+3 várólista</div>
-              </div>
-              <div class="kpi">
-                <div class="kpi-label">Bevétel</div>
-                <div class="kpi-value">248 900 Ft</div>
-                <div class="kpi-meta">+12% tegnaphoz</div>
-              </div>
-              <div class="kpi">
-                <div class="kpi-label">Emlékeztetők</div>
-                <div class="kpi-value">ON</div>
-                <div class="kpi-meta">SMS + Email</div>
-              </div>
+          <div class="badges">
+            <div class="badge-card">
+              <strong>Okos emlékeztetők</strong>
+              <span>kevesebb kimaradás</span>
             </div>
-
-            <div class="mock-list">
-              <div class="mock-row">
-                <div class="badge b1">14:30</div>
-                <div class="mock-row-main">
-                  <strong>Kovács Anna</strong>
-                  <span>Gél lakk · 60 perc</span>
-                </div>
-                <div class="status ok">megerősítve</div>
-              </div>
-
-              <div class="mock-row">
-                <div class="badge b2">15:15</div>
-                <div class="mock-row-main">
-                  <strong>Nagy Péter</strong>
-                  <span>Hajvágás · 45 perc</span>
-                </div>
-                <div class="status warn">emlékeztető kiment</div>
-              </div>
-
-              <div class="mock-row">
-                <div class="badge b3">16:00</div>
-                <div class="mock-row-main">
-                  <strong>Szabó Eszter</strong>
-                  <span>Kozmetika · 75 perc</span>
-                </div>
-                <div class="status idle">fizetés után</div>
-              </div>
+            <div class="badge-card">
+              <strong>CRM + Marketing</strong>
+              <span>visszatérők</span>
             </div>
-
-            <div class="mock-bottom">
-              <button class="mini-btn" type="button" data-toast="Foglalási link másolva!">Foglalási link</button>
-              <button class="mini-btn" type="button" data-toast="Emlékeztető sablon mentve!">Sablonok</button>
-              <button class="mini-btn primary" type="button" data-toast="Demo művelet kész!">Új időpont</button>
+            <div class="badge-card">
+              <strong>Riportok</strong>
+              <span>top szolgáltatás</span>
             </div>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Logos -->
-    <section class="logos">
-      <div class="container">
-        <p class="muted center">Kinek ideális?</p>
+      <div class="container logos">
+        <p class="muted center">Ideális:</p>
         <div class="logo-row">
-          <span>Fodrászat</span>
-          <span>Körmös</span>
-          <span>Kozmetika</span>
-          <span>Masszázs</span>
-          <span>Szépségszalon</span>
+          <span>Fodrászat</span><span>Körmös</span><span>Kozmetika</span><span>Masszázs</span><span>Szalon</span>
         </div>
       </div>
     </section>
@@ -183,120 +224,119 @@
         <div class="section-head">
           <div>
             <span class="eyebrow">/ Funkciók</span>
-            <h2>Kevesebb káosz. Több vendég.</h2>
+            <h2>Kevesebb admin. Több vendég.</h2>
             <p class="muted">A legfontosabb modulok egy rendszerben.</p>
           </div>
           <a class="btn btn-ghost" href="#demo">Kérem a demót</a>
         </div>
 
-        <div class="grid-3">
+        <div class="cards">
           <article class="card">
-            <div class="icon">📅</div>
-            <h3>Online időpontfoglalás</h3>
-            <p>Foglalási oldal + beágyazás, szolgáltatások, munkatársak, szabad idők.</p>
+            <div class="ic">📅</div>
+            <h3>Online foglalás</h3>
+            <p>Foglalási oldal + beágyazás, szabad idők, szolgáltatások, munkatársak.</p>
             <ul class="check">
               <li>Várólista</li>
-              <li>Előleg/foglaló</li>
-              <li>Google naptár sync (opció)</li>
+              <li>Foglaló/előleg (opció)</li>
+              <li>Automata megerősítés</li>
             </ul>
           </article>
 
           <article class="card">
-            <div class="icon">🔔</div>
-            <h3>Automata emlékeztetők</h3>
-            <p>SMS/Email értesítések – kevesebb no-show, több bevétel.</p>
+            <div class="ic">🔔</div>
+            <h3>SMS + Email emlékeztetők</h3>
+            <p>Időzített értesítések. Kevesebb no-show, több bevétel.</p>
             <ul class="check">
-              <li>Időzítés (24h/3h)</li>
-              <li>Sablonok</li>
+              <li>24h / 3h szabályok</li>
+              <li>Sablon könyvtár</li>
               <li>“Megerősítem” link</li>
             </ul>
           </article>
 
           <article class="card">
-            <div class="icon">👥</div>
+            <div class="ic">👥</div>
             <h3>Vendég CRM</h3>
-            <p>Jegyzetek, előzmények, költés, kedvencek – egy helyen.</p>
+            <p>Előzmények, jegyzetek, költés, címkék, szegmensek.</p>
             <ul class="check">
-              <li>Címkék & szegmensek</li>
-              <li>Újraaktiváló kampány</li>
               <li>No-show score</li>
+              <li>Újraaktiválás</li>
+              <li>VIP lista</li>
             </ul>
           </article>
 
           <article class="card">
-            <div class="icon">💳</div>
-            <h3>Fizetés & számlázás (opció)</h3>
-            <p>Előleg kezelés, online fizetés, tranzakciók export.</p>
+            <div class="ic">📣</div>
+            <h3>Marketing</h3>
+            <p>Akciók, kampányok és e-mail sorozatok pár kattintással.</p>
             <ul class="check">
-              <li>Stripe / Barion jellegű</li>
-              <li>ÁFA / export</li>
-              <li>Kuponok</li>
+              <li>Sablonok</li>
+              <li>Szegmensek</li>
+              <li>Alap riport</li>
             </ul>
           </article>
 
           <article class="card">
-            <div class="icon">📣</div>
-            <h3>Marketing modul</h3>
-            <p>Akciók, kampányok, e-mail sorozatok.</p>
-            <ul class="check">
-              <li>Sablon library</li>
-              <li>Ugyanaz a lista (CRM)</li>
-              <li>Egyszerű riportok</li>
-            </ul>
-          </article>
-
-          <article class="card">
-            <div class="icon">📊</div>
+            <div class="ic">📊</div>
             <h3>Riportok</h3>
-            <p>Top szolgáltatások, bevétel, csúcs idők, no-show.</p>
+            <p>Top szolgáltatások, bevétel, csúcs idők, kihasználtság.</p>
             <ul class="check">
-              <li>Export CSV</li>
+              <li>CSV export</li>
               <li>Heti összegzés</li>
-              <li>KPI dashboard</li>
+              <li>KPI-k</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="ic">🧩</div>
+            <h3>Integrációk</h3>
+            <p>Kapcsolódás naptárhoz, fizetéshez, űrlapokhoz (opció).</p>
+            <ul class="check">
+              <li>Naptár sync</li>
+              <li>Fizetés</li>
+              <li>Webhook/API</li>
             </ul>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- How it works -->
+    <!-- How -->
     <section class="section alt" id="how">
       <div class="container">
         <div class="section-head">
           <div>
             <span class="eyebrow">/ Hogyan működik</span>
             <h2>Indulás 3 lépésben</h2>
-            <p class="muted">Nem kell fejlesztő. 2 perc setup.</p>
+            <p class="muted">Nem kell fejlesztő. Gyors és tiszta.</p>
           </div>
         </div>
 
         <div class="steps">
           <div class="step">
-            <div class="step-n">01</div>
+            <div class="n">01</div>
             <h3>Beállítod a szolgáltatásokat</h3>
-            <p>Ár, időtartam, munkatárs, foglaló – mindent egy helyen.</p>
+            <p>Ár, időtartam, munkatárs, nyitvatartás.</p>
           </div>
           <div class="step">
-            <div class="step-n">02</div>
+            <div class="n">02</div>
             <h3>Megosztod a foglalási linket</h3>
-            <p>Instagram bio, Facebook, Google profil, weboldalba beágyazás.</p>
+            <p>Instagram bio, Google profil, weboldal, QR.</p>
           </div>
           <div class="step">
-            <div class="step-n">03</div>
-            <h3>Automata emlékeztetők dolgoznak</h3>
-            <p>Kevesebb no-show. Több visszatérő vendég.</p>
+            <div class="n">03</div>
+            <h3>Automatizálás dolgozik</h3>
+            <p>Emlékeztetők + visszahívó kampányok.</p>
           </div>
         </div>
 
         <div class="callout" id="demo">
           <div>
-            <h3>Demo kérés</h3>
-            <p class="muted">Add meg az emailt, és küldjük a demo hozzáférést.</p>
+            <h3>Demo hozzáférés</h3>
+            <p class="muted">Add meg az emailt, és küldjük a demót.</p>
           </div>
-
-          <form class="demo-form" id="demoForm">
-            <input type="email" required placeholder="Email címed" id="demoEmail" />
-            <button class="btn btn-primary" type="submit">Kérem a demót</button>
+          <form class="form" id="demoForm">
+            <input id="demoEmail" type="email" required placeholder="Email címed" />
+            <button class="btn btn-primary" type="submit">Kérem</button>
           </form>
         </div>
       </div>
@@ -309,44 +349,44 @@
           <div>
             <span class="eyebrow">/ Árazás</span>
             <h2>Átlátható csomagok</h2>
-            <p class="muted">Kezdj kicsiben, skálázz később.</p>
+            <p class="muted">Havi vagy éves (-15%).</p>
           </div>
 
-          <div class="toggle">
+          <div class="ptoggle" aria-label="Árazás váltás">
             <span class="muted">Havi</span>
-            <button class="toggle-btn" id="priceToggle" aria-label="Árazás váltás"></button>
+            <button class="switch" id="priceToggle" type="button" aria-label="Havi/Éves váltás"></button>
             <span class="muted">Éves <b class="accent">(-15%)</b></span>
           </div>
         </div>
 
         <div class="pricing">
-          <article class="price-card">
-            <div class="price-top">
+          <article class="pcard">
+            <div class="phead">
               <h3>Starter</h3>
               <p class="muted">Egyéni vállalkozóknak</p>
             </div>
             <div class="price">
-              <span class="amount" data-month="8990" data-year="7640">8 990</span>
-              <span class="muted">Ft / hó</span>
+              <span class="amt" data-month="8990" data-year="7640">8 990</span>
+              <span class="muted per">Ft / hó</span>
             </div>
             <ul class="check">
               <li>Online foglalás</li>
-              <li>Emlékeztetők (Email)</li>
+              <li>Email emlékeztetők</li>
               <li>Vendég lista</li>
-              <li>Alap riportok</li>
+              <li>Alap riport</li>
             </ul>
             <a class="btn btn-ghost full" href="signup.html">Kipróbálom</a>
           </article>
 
-          <article class="price-card popular">
+          <article class="pcard popular">
             <div class="ribbon">Legnépszerűbb</div>
-            <div class="price-top">
+            <div class="phead">
               <h3>Pro</h3>
               <p class="muted">Szalonoknak</p>
             </div>
             <div class="price">
-              <span class="amount" data-month="16990" data-year="14440">16 990</span>
-              <span class="muted">Ft / hó</span>
+              <span class="amt" data-month="16990" data-year="14440">16 990</span>
+              <span class="muted per">Ft / hó</span>
             </div>
             <ul class="check">
               <li>Munkatárs naptár</li>
@@ -357,22 +397,22 @@
             <a class="btn btn-primary full" href="signup.html">Kezdem</a>
           </article>
 
-          <article class="price-card">
-            <div class="price-top">
+          <article class="pcard">
+            <div class="phead">
               <h3>Studio</h3>
               <p class="muted">Több helyszín / csapat</p>
             </div>
             <div class="price">
-              <span class="amount" data-month="32990" data-year="28040">32 990</span>
-              <span class="muted">Ft / hó</span>
+              <span class="amt" data-month="32990" data-year="28040">32 990</span>
+              <span class="muted per">Ft / hó</span>
             </div>
             <ul class="check">
               <li>Több telephely</li>
               <li>Haladó riportok</li>
-              <li>API / integrációk</li>
+              <li>Integrációk / API</li>
               <li>Prioritás support</li>
             </ul>
-            <a class="btn btn-ghost full" href="#demo">Egyeztessünk</a>
+            <button class="btn btn-ghost full" type="button" data-toast="Írj nekünk: hello@beautyos.hu (demo)">Egyeztessünk</button>
           </article>
         </div>
       </div>
@@ -385,53 +425,53 @@
           <div>
             <span class="eyebrow">/ GYIK</span>
             <h2>Gyakori kérdések</h2>
-            <p class="muted">A legtöbb dolog 2 perc alatt tiszta.</p>
+            <p class="muted">Gyors válaszok, tiszta rendszer.</p>
           </div>
         </div>
 
-        <div class="faq" id="faqList">
-          <button class="faq-item" type="button">
+        <div class="faq" id="faqWrap">
+          <button class="q" type="button">
             <div>
-              <strong>Mennyire bonyolult beállítani?</strong>
-              <p class="muted">Szolgáltatások + nyitvatartás + foglalási link.</p>
+              <strong>Mennyi idő a beállítás?</strong>
+              <p class="muted">Tipikusan 10–20 perc.</p>
             </div>
-            <span class="plus">+</span>
+            <span class="pm">+</span>
           </button>
-          <div class="faq-body">
-            <p>A beállítás tipikusan 10–20 perc. Ha kell, adunk sablonokat és demo adatokat is.</p>
+          <div class="a">
+            <p>Szolgáltatások + nyitvatartás + foglalási link. Sablonokat is adunk.</p>
           </div>
 
-          <button class="faq-item" type="button">
+          <button class="q" type="button">
             <div>
-              <strong>Lehet foglalót/előleget kérni?</strong>
+              <strong>Lehet foglalót kérni?</strong>
               <p class="muted">Igen, Pro csomagban opció.</p>
             </div>
-            <span class="plus">+</span>
+            <span class="pm">+</span>
           </button>
-          <div class="faq-body">
-            <p>Igen. Beállítható fix összeg vagy százalék. (A fizetési szolgáltató integrációtól függ.)</p>
+          <div class="a">
+            <p>Fix összeg vagy százalék. Fizetési integrációtól függően aktiválható.</p>
           </div>
 
-          <button class="faq-item" type="button">
+          <button class="q" type="button">
             <div>
-              <strong>Mi van, ha nincs weboldalam?</strong>
-              <p class="muted">Nem gond: kapsz foglalási oldalt.</p>
+              <strong>Ha nincs weboldalam?</strong>
+              <p class="muted">Kapsz saját foglalási oldalt.</p>
             </div>
-            <span class="plus">+</span>
+            <span class="pm">+</span>
           </button>
-          <div class="faq-body">
-            <p>Kapsz saját foglalási linket, amit Instagram bio-ba, Google profilra, Facebookra bárhova kitehetsz.</p>
+          <div class="a">
+            <p>Instagram bio, Google profil, Facebook – bárhova kiteheted a linket vagy QR-t.</p>
           </div>
 
-          <button class="faq-item" type="button">
+          <button class="q" type="button">
             <div>
               <strong>Van próbaidő?</strong>
-              <p class="muted">Igen, demo / próbaverzió.</p>
+              <p class="muted">Demo hozzáférés.</p>
             </div>
-            <span class="plus">+</span>
+            <span class="pm">+</span>
           </button>
-          <div class="faq-body">
-            <p>Igen. A demo kérésnél elküldjük a hozzáférést és a kezdő beállításokat.</p>
+          <div class="a">
+            <p>Igen, a demo kérés után küldjük a hozzáférést és a kezdő beállításokat.</p>
           </div>
         </div>
       </div>
@@ -439,15 +479,17 @@
 
     <!-- Footer -->
     <footer class="footer">
-      <div class="container footer-grid">
+      <div class="container fgrid">
         <div>
           <a class="brand foot" href="#top">
-            <span class="brand-mark"></span>
-            <span class="brand-text">BeautyOS</span>
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-name">BeautyOS</span>
           </a>
-          <p class="muted">
-            Foglalás, vendégkezelés, automatizálás – szépség vállalkozásoknak.
-          </p>
+          <p class="muted">Foglalás · CRM · Emlékeztetők · Marketing</p>
+          <div class="fmini">
+            <button class="mini" type="button" data-toast="hello@beautyos.hu (demo)">Email</button>
+            <button class="mini" type="button" data-toast="+36 30 123 4567 (demo)">Telefon</button>
+          </div>
         </div>
 
         <div>
@@ -461,7 +503,7 @@
           <h4>Cég</h4>
           <a href="#">Rólunk</a>
           <a href="#">Kapcsolat</a>
-          <a href="#">Állás</a>
+          <a href="#">Partnerek</a>
         </div>
 
         <div>
@@ -472,7 +514,7 @@
         </div>
       </div>
 
-      <div class="container foot-bottom">
+      <div class="container fbottom">
         <span>© 2026 BeautyOS</span>
         <span class="muted">Design & Code: Extorei</span>
       </div>
@@ -480,47 +522,72 @@
   </main>
 
   <script>
-    // ===== Mobile menu =====
+    // =========================
+    // THEME (default: light)
+    // =========================
+    const root = document.documentElement;
+    const themeBtn = document.getElementById('themeBtn');
+
+    const setTheme = (t) => {
+      root.setAttribute('data-theme', t);
+      localStorage.setItem('beautyos_theme', t);
+      // theme-color meta
+      const meta = document.querySelector('meta[name="theme-color"]');
+      meta.setAttribute('content', t === 'dark' ? '#050505' : '#f6f7fb');
+    };
+
+    const saved = localStorage.getItem('beautyos_theme');
+    if (saved === 'dark' || saved === 'light') setTheme(saved);
+    else setTheme('light');
+
+    themeBtn.addEventListener('click', () => {
+      const current = root.getAttribute('data-theme') || 'light';
+      setTheme(current === 'light' ? 'dark' : 'light');
+    });
+
+    // =========================
+    // Mobile menu
+    // =========================
     const menuBtn = document.getElementById('menuBtn');
-    const mobileNav = document.getElementById('mobileNav');
-    const header = document.getElementById('header');
+    const mnav = document.getElementById('mnav');
 
     const openMenu = () => {
-      mobileNav.classList.add('open');
-      mobileNav.setAttribute('aria-hidden', 'false');
+      mnav.classList.add('open');
+      mnav.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
       menuBtn.classList.add('active');
     };
     const closeMenu = () => {
-      mobileNav.classList.remove('open');
-      mobileNav.setAttribute('aria-hidden', 'true');
+      mnav.classList.remove('open');
+      mnav.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = 'auto';
       menuBtn.classList.remove('active');
     };
 
     menuBtn.addEventListener('click', () => {
-      mobileNav.classList.contains('open') ? closeMenu() : openMenu();
+      mnav.classList.contains('open') ? closeMenu() : openMenu();
     });
 
-    document.querySelectorAll('.m-link').forEach(a => {
-      a.addEventListener('click', closeMenu);
-    });
-
-    // Close on ESC
+    document.querySelectorAll('.mnav-link').forEach(a => a.addEventListener('click', closeMenu));
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && mobileNav.classList.contains('open')) closeMenu();
+      if (e.key === 'Escape' && mnav.classList.contains('open')) closeMenu();
     });
 
-    // ===== Header hide/show (simple) =====
+    // =========================
+    // Sticky header hide/show
+    // =========================
+    const header = document.getElementById('header');
     let lastY = 0;
     window.addEventListener('scroll', () => {
       const y = window.scrollY || 0;
-      if (y > lastY && y > 120) header.classList.add('hide');
+      if (y > lastY && y > 140) header.classList.add('hide');
       else header.classList.remove('hide');
       lastY = y;
     });
 
-    // ===== Smooth anchor =====
+    // =========================
+    // Smooth anchors
+    // =========================
     document.querySelectorAll('a[href^="#"]').forEach(a => {
       a.addEventListener('click', (e) => {
         const id = a.getAttribute('href');
@@ -532,21 +599,23 @@
       });
     });
 
-    // ===== Pricing toggle =====
+    // =========================
+    // Pricing toggle
+    // =========================
     const priceToggle = document.getElementById('priceToggle');
-    const amounts = document.querySelectorAll('.amount');
+    const amts = document.querySelectorAll('.amt');
     let yearly = false;
 
-    const formatHu = (n) => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    const fmt = (n) => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     const renderPrices = () => {
-      amounts.forEach(a => {
-        const m = Number(a.dataset.month);
-        const y = Number(a.dataset.year);
-        a.textContent = formatHu(yearly ? y : m);
-        a.nextElementSibling.textContent = yearly ? 'Ft / hó (éves számlázás)' : 'Ft / hó';
+      amts.forEach(el => {
+        const m = Number(el.dataset.month);
+        const y = Number(el.dataset.year);
+        el.textContent = fmt(yearly ? y : m);
+        const per = el.parentElement.querySelector('.per');
+        per.textContent = yearly ? 'Ft / hó (éves)' : 'Ft / hó';
       });
     };
-
     priceToggle.addEventListener('click', () => {
       yearly = !yearly;
       priceToggle.classList.toggle('on', yearly);
@@ -554,43 +623,61 @@
     });
     renderPrices();
 
-    // ===== FAQ accordion =====
-    const faqButtons = document.querySelectorAll('.faq-item');
-    faqButtons.forEach((btn, idx) => {
+    // =========================
+    // FAQ accordion
+    // =========================
+    const qs = document.querySelectorAll('.q');
+    qs.forEach(btn => {
       btn.addEventListener('click', () => {
         const body = btn.nextElementSibling;
         const open = body.classList.contains('open');
-        document.querySelectorAll('.faq-body').forEach(b => b.classList.remove('open'));
-        document.querySelectorAll('.faq-item .plus').forEach(p => p.textContent = '+');
+
+        document.querySelectorAll('.a').forEach(a => a.classList.remove('open'));
+        document.querySelectorAll('.q .pm').forEach(p => p.textContent = '+');
+
         if (!open) {
           body.classList.add('open');
-          btn.querySelector('.plus').textContent = '–';
+          btn.querySelector('.pm').textContent = '–';
         }
       });
     });
 
-    // ===== Demo form toast =====
+    // =========================
+    // Toast
+    // =========================
+    const toastWrap = document.getElementById('toasts');
     const toast = (msg) => {
       const t = document.createElement('div');
       t.className = 'toast';
       t.textContent = msg;
-      document.getElementById('toastWrap').appendChild(t);
+      toastWrap.appendChild(t);
       requestAnimationFrame(() => t.classList.add('show'));
       setTimeout(() => {
         t.classList.remove('show');
-        setTimeout(() => t.remove(), 250);
+        setTimeout(() => t.remove(), 220);
       }, 2200);
     };
 
-    document.querySelectorAll('[data-toast]').forEach(btn => {
-      btn.addEventListener('click', () => toast(btn.dataset.toast));
+    document.querySelectorAll('[data-toast]').forEach(el => {
+      el.addEventListener('click', () => toast(el.dataset.toast));
     });
 
+    // Copy demo link
+    document.getElementById('copyLinkBtn').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText('https://beautyos.hu/foglalas/demo-salon');
+        toast('Foglalási link másolva!');
+      } catch {
+        toast('Másolás nem sikerült (böngésző korlát).');
+      }
+    });
+
+    // Demo form
     document.getElementById('demoForm').addEventListener('submit', (e) => {
       e.preventDefault();
       const email = document.getElementById('demoEmail').value.trim();
       if (!email) return;
-      toast('Köszi! A demo linket elküldtük emailben. (demo)');
+      toast('Köszi! Küldtük a demo hozzáférést. (demo)');
       e.target.reset();
     });
   </script>
