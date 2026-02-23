@@ -14,9 +14,15 @@
 </head>
 
 <body>
-  <!-- animated bg -->
-  <canvas id="bg"></canvas>
-  <div class="bg-glow" aria-hidden="true"></div>
+  <!-- Multi-layer animated background -->
+  <div class="bg">
+    <canvas id="bg"></canvas>
+    <div class="aurora a1" aria-hidden="true"></div>
+    <div class="aurora a2" aria-hidden="true"></div>
+    <div class="aurora a3" aria-hidden="true"></div>
+    <div class="noise" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+  </div>
 
   <header class="topbar">
     <a class="brand" href="index.html" aria-label="Vissza a főoldalra">
@@ -24,17 +30,22 @@
       <span class="brand-text">EXTOREI <b>BeautySuite</b></span>
     </a>
 
-    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Téma váltása (light/dark)">
-      <span class="theme-toggle__icon" aria-hidden="true">☀</span>
-      <span class="theme-toggle__text">Light</span>
-    </button>
+    <div class="top-actions">
+      <button class="chip" type="button" id="reduceMotion" aria-label="Animációk csökkentése">⚡ Smooth</button>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Téma váltása (light/dark)">
+        <span class="theme-toggle__icon" aria-hidden="true">☀</span>
+        <span class="theme-toggle__text">Light</span>
+      </button>
+    </div>
   </header>
 
   <main class="wrap">
-    <section class="card" aria-label="Bejelentkezés">
+    <section class="card" id="tiltCard" aria-label="Bejelentkezés">
+      <div class="card-shine" aria-hidden="true"></div>
+
       <div class="card-head">
         <h1>Bejelentkezés</h1>
-        <p>Üdv újra! Lépj be a szalon irányítópultjába.</p>
+        <p>Gyors, elegáns, automatikus — a szalonod új vezérlőpultja.</p>
       </div>
 
       <form class="form" onsubmit="event.preventDefault(); alert('Demo: ide jön majd az auth API.');">
@@ -59,7 +70,10 @@
           <a class="link" href="#">Elfelejtett jelszó?</a>
         </div>
 
-        <button class="btn btn-primary" type="submit">Belépek</button>
+        <button class="btn btn-primary" type="submit">
+          <span>Belépek</span>
+          <span class="btn-arrow" aria-hidden="true">→</span>
+        </button>
 
         <div class="divider"><span>vagy</span></div>
 
@@ -77,22 +91,17 @@
 
     <aside class="side">
       <div class="side-card">
-        <h2>Kevesebb no-show.</h2>
-        <p>Automatikus emlékeztetők, előleg, és okos szabályok — hogy a naptárad tele legyen.</p>
+        <h2>Tele naptár. Kevesebb káosz.</h2>
+        <p>Időpontok, előleg, automatizmusok, kampányok — mind egy helyen.</p>
 
         <div class="mini-kpis">
-          <div class="kpi">
-            <span class="k">No-show</span>
-            <span class="v">−22%</span>
-          </div>
-          <div class="kpi">
-            <span class="k">Átlag kosár</span>
-            <span class="v">+18%</span>
-          </div>
-          <div class="kpi">
-            <span class="k">Visszatérők</span>
-            <span class="v">+31%</span>
-          </div>
+          <div class="kpi"><span class="k">No-show</span><span class="v">−22%</span></div>
+          <div class="kpi"><span class="k">Átlag kosár</span><span class="v">+18%</span></div>
+          <div class="kpi"><span class="k">Visszatérők</span><span class="v">+31%</span></div>
+        </div>
+
+        <div class="pulse-pill" aria-hidden="true">
+          <span class="dot"></span> Live: 12 foglalás ma
         </div>
       </div>
     </aside>
