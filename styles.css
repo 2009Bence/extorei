@@ -18,7 +18,11 @@
 
   --ease: cubic-bezier(.2, .9, .2, 1);
 }
-
+.btn-short{ display:none; }
+@media (max-width: 520px){
+  .btn-long{ display:none; }
+  .btn-short{ display:inline; }
+}
 /* ---------- THEME TOKENS ---------- */
 html[data-theme="light"]{
   --bg: #ffffff;
