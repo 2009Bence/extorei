@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="hu" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bejelentkezés | EXTOREI BeautySuite</title>
+  <meta name="theme-color" content="#ffffff" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="login.css" />
+</head>
+
+<body>
+  <!-- animated bg -->
+  <canvas id="bg"></canvas>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="index.html" aria-label="Vissza a főoldalra">
+      <span class="brand-mark">E</span>
+      <span class="brand-text">EXTOREI <b>BeautySuite</b></span>
+    </a>
+
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Téma váltása (light/dark)">
+      <span class="theme-toggle__icon" aria-hidden="true">☀</span>
+      <span class="theme-toggle__text">Light</span>
+    </button>
+  </header>
+
+  <main class="wrap">
+    <section class="card" aria-label="Bejelentkezés">
+      <div class="card-head">
+        <h1>Bejelentkezés</h1>
+        <p>Üdv újra! Lépj be a szalon irányítópultjába.</p>
+      </div>
+
+      <form class="form" onsubmit="event.preventDefault(); alert('Demo: ide jön majd az auth API.');">
+        <label class="field">
+          <span>Email</span>
+          <input type="email" required placeholder="szalon@ceg.hu" autocomplete="email" />
+        </label>
+
+        <label class="field">
+          <span>Jelszó</span>
+          <div class="pw">
+            <input id="pw" type="password" required placeholder="••••••••" autocomplete="current-password" />
+            <button class="pw-toggle" id="pwToggle" type="button" aria-label="Jelszó megjelenítése">👁</button>
+          </div>
+        </label>
+
+        <div class="row">
+          <label class="check">
+            <input type="checkbox" />
+            <span>Emlékezz rám</span>
+          </label>
+          <a class="link" href="#">Elfelejtett jelszó?</a>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Belépek</button>
+
+        <div class="divider"><span>vagy</span></div>
+
+        <button class="btn btn-ghost" type="button" onclick="alert('Demo: Google login')">
+          <span class="g-dot" aria-hidden="true"></span>
+          Belépés Google-lel
+        </button>
+
+        <p class="bottom">
+          Nincs még fiókod?
+          <a class="link" href="index.html#demo">Kérj demót</a>
+        </p>
+      </form>
+    </section>
+
+    <aside class="side">
+      <div class="side-card">
+        <h2>Kevesebb no-show.</h2>
+        <p>Automatikus emlékeztetők, előleg, és okos szabályok — hogy a naptárad tele legyen.</p>
+
+        <div class="mini-kpis">
+          <div class="kpi">
+            <span class="k">No-show</span>
+            <span class="v">−22%</span>
+          </div>
+          <div class="kpi">
+            <span class="k">Átlag kosár</span>
+            <span class="v">+18%</span>
+          </div>
+          <div class="kpi">
+            <span class="k">Visszatérők</span>
+            <span class="v">+31%</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script src="login.js"></script>
+</body>
+</html>
