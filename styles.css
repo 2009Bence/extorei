@@ -1,1 +1,341 @@
+/* =========================================================
+   EXTOREI SaaS Starter Dashboard - app.css
+   ========================================================= */
 
+:root{
+  --app-bg: #0b1020;
+  --app-card: rgba(255,255,255,.06);
+  --app-card-2: rgba(255,255,255,.08);
+  --app-border: rgba(255,255,255,.12);
+  --app-text: rgba(255,255,255,.88);
+  --app-muted: rgba(255,255,255,.62);
+  --app-accent: #7c5cff;
+  --app-accent-2: #22c55e;
+  --app-danger: #ef4444;
+  --app-warn: #f59e0b;
+  --app-info: #38bdf8;
+
+  --radius-xl: 18px;
+  --radius-lg: 14px;
+
+  --shadow-soft: 0 10px 30px rgba(0,0,0,.35);
+}
+
+html, body{
+  height: 100%;
+}
+
+body{
+  background:
+    radial-gradient(1200px 600px at 15% 15%, rgba(124,92,255,.25), transparent 60%),
+    radial-gradient(900px 500px at 90% 25%, rgba(56,189,248,.18), transparent 55%),
+    radial-gradient(900px 600px at 40% 90%, rgba(34,197,94,.16), transparent 55%),
+    var(--app-bg);
+  color: var(--app-text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+}
+
+/* -----------------------------
+   Utilities
+----------------------------- */
+
+.text-muted-2{ color: var(--app-muted) !important; }
+.bg-card{
+  background: var(--app-card);
+  border: 1px solid var(--app-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+}
+
+.bg-card-2{
+  background: var(--app-card-2);
+  border: 1px solid var(--app-border);
+  border-radius: var(--radius-xl);
+}
+
+.border-soft{
+  border: 1px solid var(--app-border) !important;
+}
+
+.rounded-xl{
+  border-radius: var(--radius-xl) !important;
+}
+
+.rounded-lg{
+  border-radius: var(--radius-lg) !important;
+}
+
+.shadow-soft{ box-shadow: var(--shadow-soft) !important; }
+
+.badge-soft{
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  color: var(--app-text);
+}
+
+.badge-accent{
+  background: rgba(124,92,255,.15);
+  border: 1px solid rgba(124,92,255,.30);
+  color: #dcd6ff;
+}
+
+.badge-success{
+  background: rgba(34,197,94,.15);
+  border: 1px solid rgba(34,197,94,.30);
+  color: #c8ffe0;
+}
+
+.badge-warning{
+  background: rgba(245,158,11,.15);
+  border: 1px solid rgba(245,158,11,.30);
+  color: #ffe9c2;
+}
+
+.badge-danger{
+  background: rgba(239,68,68,.15);
+  border: 1px solid rgba(239,68,68,.30);
+  color: #ffd0d0;
+}
+
+/* -----------------------------
+   Topbar
+----------------------------- */
+
+.app-topbar{
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  backdrop-filter: blur(14px);
+  background: rgba(11,16,32,.55);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.app-brand{
+  letter-spacing: .5px;
+  font-weight: 800;
+}
+.app-brand .dot{
+  color: var(--app-accent);
+}
+
+.search-pill{
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.search-pill input{
+  background: transparent;
+  border: 0;
+  color: var(--app-text);
+}
+.search-pill input:focus{
+  outline: none;
+  box-shadow: none;
+}
+.search-pill .btn{
+  border: 0;
+}
+
+/* -----------------------------
+   Sidebar
+----------------------------- */
+
+.app-shell{
+  display: flex;
+  min-height: 100vh;
+}
+
+.app-sidebar{
+  width: 280px;
+  padding: 16px;
+  position: sticky;
+  top: 70px;
+  height: calc(100vh - 70px);
+  overflow: auto;
+}
+
+.sidebar-card{
+  padding: 14px;
+}
+
+.nav-pills .nav-link{
+  color: rgba(255,255,255,.75);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.nav-pills .nav-link:hover{
+  background: rgba(255,255,255,.06);
+  color: #fff;
+}
+.nav-pills .nav-link.active{
+  background: rgba(124,92,255,.18);
+  border: 1px solid rgba(124,92,255,.35);
+  color: #fff;
+}
+
+.sidebar-mini{
+  width: 96px;
+}
+.sidebar-mini .nav-link span,
+.sidebar-mini .sidebar-footer,
+.sidebar-mini .sidebar-profile,
+.sidebar-mini .sidebar-section-title{
+  display: none !important;
+}
+
+.sidebar-section-title{
+  font-size: .75rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.45);
+  margin-top: 18px;
+  margin-bottom: 8px;
+}
+
+.sidebar-footer{
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.10);
+}
+
+/* -----------------------------
+   Main content
+----------------------------- */
+
+.app-main{
+  flex: 1;
+  padding: 18px 18px 30px;
+}
+
+.kpi-icon{
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+}
+
+.kpi{
+  padding: 16px;
+}
+
+.kpi h6{
+  color: rgba(255,255,255,.65);
+  font-weight: 600;
+}
+
+.kpi .value{
+  font-size: 1.55rem;
+  font-weight: 800;
+}
+
+.kpi .delta{
+  font-size: .9rem;
+  color: rgba(255,255,255,.70);
+}
+
+.btn-accent{
+  background: rgba(124,92,255,.22);
+  border: 1px solid rgba(124,92,255,.45);
+  color: #fff;
+}
+.btn-accent:hover{
+  background: rgba(124,92,255,.30);
+  border-color: rgba(124,92,255,.60);
+  color: #fff;
+}
+
+.btn-ghost{
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  color: #fff;
+}
+.btn-ghost:hover{
+  background: rgba(255,255,255,.10);
+  border-color: rgba(255,255,255,.18);
+  color: #fff;
+}
+
+.table-darkish{
+  --bs-table-bg: transparent;
+  --bs-table-color: rgba(255,255,255,.88);
+  --bs-table-border-color: rgba(255,255,255,.10);
+  --bs-table-striped-bg: rgba(255,255,255,.04);
+  --bs-table-hover-bg: rgba(255,255,255,.06);
+}
+
+.form-control,
+.form-select{
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  color: rgba(255,255,255,.90);
+}
+.form-control:focus,
+.form-select:focus{
+  background: rgba(255,255,255,.06);
+  border-color: rgba(124,92,255,.55);
+  box-shadow: 0 0 0 .25rem rgba(124,92,255,.18);
+  color: #fff;
+}
+
+hr.soft{
+  border-color: rgba(255,255,255,.10);
+  opacity: 1;
+}
+
+.app-footer{
+  color: rgba(255,255,255,.55);
+  font-size: .9rem;
+  margin-top: 18px;
+}
+
+/* -----------------------------
+   Theme (light) toggle
+----------------------------- */
+
+body.theme-light{
+  --app-bg: #f4f6fb;
+  --app-text: rgba(20,25,35,.92);
+  --app-muted: rgba(20,25,35,.62);
+  --app-card: rgba(255,255,255,.85);
+  --app-card-2: rgba(255,255,255,.70);
+  --app-border: rgba(20,25,35,.10);
+
+  background:
+    radial-gradient(1100px 600px at 15% 15%, rgba(124,92,255,.18), transparent 60%),
+    radial-gradient(900px 500px at 90% 25%, rgba(56,189,248,.14), transparent 55%),
+    radial-gradient(900px 600px at 40% 90%, rgba(34,197,94,.12), transparent 55%),
+    var(--app-bg);
+}
+
+body.theme-light .app-topbar{
+  background: rgba(244,246,251,.7);
+  border-bottom: 1px solid rgba(20,25,35,.10);
+}
+
+body.theme-light .nav-pills .nav-link{
+  color: rgba(20,25,35,.72);
+}
+body.theme-light .nav-pills .nav-link:hover{
+  color: rgba(20,25,35,.92);
+}
+
+/* -----------------------------
+   Responsive tweaks
+----------------------------- */
+
+@media (max-width: 991.98px){
+  .app-shell{
+    flex-direction: column;
+  }
+  .app-sidebar{
+    width: 100%;
+    position: relative;
+    top: 0;
+    height: auto;
+  }
+}
