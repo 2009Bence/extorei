@@ -124,7 +124,7 @@ export default function Page() {
         >
           <div className="mobile-drawer__panel" role="dialog" aria-label="Mobil menü">
             <div className="mobile-drawer__top">
-              <span className="mobile-brand">BeautySuite</span>
+              <span className="mobile-brand">viazSuite</span>
               <button
                 className="mobile-close"
                 id="mobileClose"
