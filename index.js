@@ -44,14 +44,6 @@
 
     if (icon) icon.textContent = resolved === "dark" ? "🌙" : "☀️";
 
-    // Ha szeretnéd: jelenítse meg a módot is
-    // pl: "Dark (System)" vagy "Light"
-    if (text) {
-      const label =
-        resolved === "dark" ? "Dark" : "Light";
-      text.textContent = mode === "system" ? `${label} (System)` : label;
-    }
-
     // theme-color meta
     if (themeMeta) themeMeta.setAttribute("content", resolved === "dark" ? THEME_COLOR_DARK : THEME_COLOR_LIGHT);
   }
