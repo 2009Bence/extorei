@@ -65,7 +65,7 @@ export default function Page() {
           <a className="brand" href="#top" aria-label="Főoldal">
             <span className="brand-mark">E</span>
             <span className="brand-text">
-              EXTOREI <b>BeautySuite</b>
+              EXTOREI <b>viaszSuite</b>
             </span>
           </a>
 
@@ -124,7 +124,7 @@ export default function Page() {
         >
           <div className="mobile-drawer__panel" role="dialog" aria-label="Mobil menü">
             <div className="mobile-drawer__top">
-              <span className="mobile-brand">viazSuite</span>
+              <span className="mobile-brand">BeautySuite</span>
               <button
                 className="mobile-close"
                 id="mobileClose"
