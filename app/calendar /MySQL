@@ -1,0 +1,88 @@
+-- USERS (admin / staff)
+CREATE TABLE users (
+  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  role ENUM('admin','staff') NOT NULL DEFAULT 'staff',
+  name VARCHAR(120) NOT NULL,
+  email VARCHAR(190) UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CLIENTS
+CREATE TABLE clients (
+  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(120) NOT NULL,
+  phone VARCHAR(40),
+  email VARCHAR(190),
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- SERVICES
+CREATE TABLE services (
+  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(140) NOT NULL,
+  duration_min INT NOT NULL,            -- pl. 45
+  price_cents INT NOT NULL DEFAULT 0,   -- pl. 12000 Ft -> 1200000? (cents/forint) döntsd el
+  buffer_before_min INT NOT NULL DEFAULT 0,
+  buffer_after_min INT NOT NULL DEFAULT 0,
+  is_active TINYINT(1) NOT NULL DEFAULT 1
+);
+
+-- STAFF <-> SERVICES (ki mit tud)
+CREATE TABLE staff_services (
+  staff_id BIGINT UNSIGNED NOT NULL,
+  service_id BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (staff_id, service_id),
+  FOREIGN KEY (staff_id) REFERENCES users(id),
+  FOREIGN KEY (service_id) REFERENCES services(id)
+);
+
+-- WEEKLY DEFAULT SCHEDULE (0=Sunday..6=Saturday)
+CREATE TABLE staff_weekly_schedule (
+  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  staff_id BIGINT UNSIGNED NOT NULL,
+  weekday TINYINT NOT NULL,
+  start_time TIME NOT NULL,  -- 09:00
+  end_time TIME NOT NULL,    -- 17:00
+  FOREIGN KEY (staff_id) REFERENCES users(id)
+);
+
+-- EXCEPTIONS (szabi, extra műszak, zárás)
+CREATE TABLE staff_schedule_exceptions (
+  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  staff_id BIGINT UNSIGNED NOT NULL,
+  date DATE NOT NULL,
+  type ENUM('off','custom') NOT NULL,  -- off: nem dolgozik, custom: ezen a napon egyedi sávok
+  note VARCHAR(255),
+  FOREIGN KEY (staff_id) REFERENCES users(id),
+  UNIQUE KEY uniq_staff_date (staff_id, date)
+);
+
+-- CUSTOM DAY SLOTS (ha exception=custom)
+CREATE TABLE staff_custom_day_slots (
+  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  staff_id BIGINT UNSIGNED NOT NULL,
+  date DATE NOT NULL,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  FOREIGN KEY (staff_id) REFERENCES users(id)
+);
+
+-- APPOINTMENTS
+CREATE TABLE appointments (
+  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  staff_id BIGINT UNSIGNED NOT NULL,
+  client_id BIGINT UNSIGNED NOT NULL,
+  service_id BIGINT UNSIGNED NOT NULL,
+  start_at DATETIME NOT NULL,
+  end_at DATETIME NOT NULL,
+  status ENUM('pending','confirmed','cancelled','no_show','done') NOT NULL DEFAULT 'confirmed',
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (staff_id) REFERENCES users(id),
+  FOREIGN KEY (client_id) REFERENCES clients(id),
+  FOREIGN KEY (service_id) REFERENCES services(id),
+  INDEX idx_staff_time (staff_id, start_at, end_at)
+);
