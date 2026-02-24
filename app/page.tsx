@@ -65,7 +65,7 @@ export default function Page() {
           <a className="brand" href="#top" aria-label="Főoldal">
             <span className="brand-mark">E</span>
             <span className="brand-text">
-              EXTOREI <b>nameviaszSuite</b>
+              EXTOREI <b>BeautySuite</b>
             </span>
           </a>
 
