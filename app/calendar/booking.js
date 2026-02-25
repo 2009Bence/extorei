@@ -10,14 +10,14 @@
   ];
 
   const staff = [
-    { id: 1, name: "Bence", serviceIds: [1,2,3] },
-    { id: 2, name: "Nóri", serviceIds: [2,3,4] },
-    { id: 3, name: "Dani", serviceIds: [1,2] }
+    { id: 1, name: "Bence", serviceIds: [1, 2, 3] },
+    { id: 2, name: "Nóri", serviceIds: [2, 3, 4] },
+    { id: 3, name: "Dani", serviceIds: [1, 2] }
   ];
 
   // demo booked events (később GET /api/calendar)
   let booked = [
-    // { id:"a1", staffId: 1, start:"2026-02-24T10:00:00", end:"2026-02-24T10:30:00", status:"confirmed", title:"Foglalt" }
+    // { id:"a1", staffId: 1, start:"2026-02-24T10:00:00", end:"2026-02-24T10:30:00", status:"confirmed" }
   ];
 
   // ======= DOM =======
@@ -45,7 +45,6 @@
   const summaryPrice = document.getElementById("summaryPrice");
 
   const statusText = document.getElementById("statusText");
-  const statusPill = document.getElementById("statusPill");
   const nextSlotText = document.getElementById("nextSlotText");
 
   const scrollToCalendar = document.getElementById("scrollToCalendar");
@@ -76,11 +75,13 @@
   };
 
   function setStatus(text) {
-    statusText.textContent = text;
+    if (statusText) statusText.textContent = text;
   }
 
   function toast(title, text) {
     const wrap = document.getElementById("toastWrap");
+    if (!wrap) return;
+
     const el = document.createElement("div");
     el.className = "toastx";
     el.innerHTML = `
@@ -93,53 +94,84 @@
       </div>
     `;
     wrap.appendChild(el);
+
     const btn = el.querySelector(".toastx-close");
-    btn.addEventListener("click", () => el.remove());
+    btn?.addEventListener("click", () => el.remove());
     setTimeout(() => el.remove(), 5500);
   }
 
+  // =====================
+  // THEME (javítva)
+  // =====================
   function setTheme(theme) {
-    html.setAttribute("data-theme", theme);
-    const isDark = theme === "dark";
-    themeIcon.textContent = isDark ? "🌙" : "☀️";
-    themeText.textContent = isDark ? "Dark" : "Light";
+    // csak light/dark engedélyezett
+    const t = theme === "light" ? "light" : "dark";
+    html.setAttribute("data-theme", t);
+
+    const isLight = t === "light";
+    if (themeIcon) themeIcon.textContent = isLight ? "☀️" : "🌙";
+    if (themeText) themeText.textContent = isLight ? "Light" : "Dark";
+
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", isDark ? "#0b1020" : "#ffffff");
+    if (meta) meta.setAttribute("content", isLight ? "#f6f7fb" : "#0b1020");
   }
 
   function getInitialTheme() {
     const saved = localStorage.getItem(THEME_KEY);
     if (saved === "light" || saved === "dark") return saved;
-    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    return prefersDark ? "dark" : "light";
+
+    const prefersLight =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: light)").matches;
+
+    return prefersLight ? "light" : "dark";
   }
 
+  function toggleTheme() {
+    const current = html.getAttribute("data-theme") === "light" ? "light" : "dark";
+    const next = current === "light" ? "dark" : "light";
+    localStorage.setItem(THEME_KEY, next);
+    setTheme(next);
+  }
+
+  // ======= Data -> UI =======
   function populateServices() {
-    serviceSelect.innerHTML = services.map(s => (
-      `<option value="${s.id}">${s.name} • ${s.duration} perc • ${s.price.toLocaleString("hu-HU")} Ft</option>`
-    )).join("");
+    if (!serviceSelect) return;
+
+    serviceSelect.innerHTML = services
+      .map(
+        (s) =>
+          `<option value="${s.id}">${s.name} • ${s.duration} perc • ${s.price.toLocaleString(
+            "hu-HU"
+          )} Ft</option>`
+      )
+      .join("");
+
     state.serviceId = Number(serviceSelect.value) || services[0]?.id || null;
   }
 
   function populateStaff() {
-    const filtered = staff.filter(p => p.serviceIds.includes(state.serviceId));
-    staffSelect.innerHTML = filtered.map(p => `<option value="${p.id}">${p.name}</option>`).join("");
-    state.staffId = Number(staffSelect.value) || filtered[0]?.id || null;
+    if (!staffSelect) return;
 
+    const filtered = staff.filter((p) => p.serviceIds.includes(state.serviceId));
     if (!filtered.length) {
       staffSelect.innerHTML = `<option value="">Nincs elérhető szakember</option>`;
       state.staffId = null;
+      return;
     }
+
+    staffSelect.innerHTML = filtered.map((p) => `<option value="${p.id}">${p.name}</option>`).join("");
+    state.staffId = Number(staffSelect.value) || filtered[0]?.id || null;
   }
 
   function updateSummary() {
-    const svc = services.find(s => s.id === state.serviceId);
-    const stf = staff.find(s => s.id === state.staffId);
+    const svc = services.find((s) => s.id === state.serviceId);
+    const stf = staff.find((s) => s.id === state.staffId);
 
-    summaryService.textContent = svc ? svc.name : "—";
-    summaryStaff.textContent = stf ? stf.name : "—";
-    summaryDuration.textContent = svc ? `${svc.duration} perc` : "—";
-    summaryPrice.textContent = svc ? `${svc.price.toLocaleString("hu-HU")} Ft` : "—";
+    if (summaryService) summaryService.textContent = svc ? svc.name : "—";
+    if (summaryStaff) summaryStaff.textContent = stf ? stf.name : "—";
+    if (summaryDuration) summaryDuration.textContent = svc ? `${svc.duration} perc` : "—";
+    if (summaryPrice) summaryPrice.textContent = svc ? `${svc.price.toLocaleString("hu-HU")} Ft` : "—";
   }
 
   function canSubmit() {
@@ -149,8 +181,8 @@
   function clearSelection() {
     state.selectedStart = null;
     state.selectedEnd = null;
-    selectedSlot.value = "";
-    bookBtn.disabled = true;
+    if (selectedSlot) selectedSlot.value = "";
+    if (bookBtn) bookBtn.disabled = true;
     setStatus("Kiválasztás törölve");
   }
 
@@ -159,7 +191,7 @@
   }
 
   function getServiceDurationMs() {
-    const svc = services.find(s => s.id === state.serviceId);
+    const svc = services.find((s) => s.id === state.serviceId);
     const mins = svc?.duration ?? 30;
     return mins * 60 * 1000;
   }
@@ -182,7 +214,7 @@
       const start = new Date(t);
       const end = new Date(t + dur);
 
-      const conflict = booked.some(ev => {
+      const conflict = booked.some((ev) => {
         if (ev.staffId !== staffId) return false;
         const es = new Date(ev.start);
         const ee = new Date(ev.end);
@@ -199,31 +231,23 @@
   let calendar;
 
   function buildEventsForCalendar() {
-    // event title/status
+    // ⚠️ MÓDOSÍTVA: inline backgroundColor helyett classNames
     return booked
-      .filter(ev => ev.staffId === state.staffId)
-      .map(ev => {
-        const base = {
-          id: ev.id,
-          title: ev.status === "pending" ? "Függő" : "Foglalt",
-          start: ev.start,
-          end: ev.end,
-          editable: false
-        };
-
-        if (ev.status === "pending") {
-          base.backgroundColor = "rgba(245,158,11,.35)";
-          base.textColor = "inherit";
-        } else {
-          base.backgroundColor = "rgba(239,68,68,.35)";
-          base.textColor = "inherit";
-        }
-        return base;
-      });
+      .filter((ev) => ev.staffId === state.staffId)
+      .map((ev) => ({
+        id: ev.id,
+        title: ev.status === "pending" ? "Függő" : "Foglalt",
+        start: ev.start,
+        end: ev.end,
+        editable: false,
+        classNames: [ev.status === "pending" ? "ev-pending" : "ev-busy"]
+      }));
   }
 
   function initCalendar() {
     const el = document.getElementById("calendar");
+    if (!el) return;
+
     calendar = new FullCalendar.Calendar(el, {
       initialView: "timeGridWeek",
       height: "auto",
@@ -256,7 +280,7 @@
         const start = new Date(info.start);
         const end = new Date(start.getTime() + dur);
 
-        // ne engedje zárás után
+        // ne engedje zárás után (17:00)
         const dayEnd = new Date(start);
         dayEnd.setHours(17, 0, 0, 0);
         if (end > dayEnd) {
@@ -266,7 +290,7 @@
         }
 
         // ütközés check (demo)
-        const conflict = booked.some(ev => {
+        const conflict = booked.some((ev) => {
           if (ev.staffId !== state.staffId) return false;
           const es = new Date(ev.start);
           const ee = new Date(ev.end);
@@ -282,8 +306,8 @@
         state.selectedStart = start;
         state.selectedEnd = end;
 
-        selectedSlot.value = `${fmtLocal(start)} → ${fmtLocal(end)}`;
-        bookBtn.disabled = !canSubmit();
+        if (selectedSlot) selectedSlot.value = `${fmtLocal(start)} → ${fmtLocal(end)}`;
+        if (bookBtn) bookBtn.disabled = !canSubmit();
         setStatus("Időpont kiválasztva");
       }
     });
@@ -295,20 +319,19 @@
     if (!calendar) return;
 
     // set date if provided
-    if (dateSelect.value) {
+    if (dateSelect?.value) {
       calendar.gotoDate(dateSelect.value);
     }
 
     calendar.removeAllEvents();
-    buildEventsForCalendar().forEach(e => calendar.addEvent(e));
+    buildEventsForCalendar().forEach((e) => calendar.addEvent(e));
 
     // compute next free slot for that date
-    const base = dateSelect.value ? new Date(dateSelect.value) : new Date();
+    const base = dateSelect?.value ? new Date(dateSelect.value) : new Date();
     const next = computeNextFreeSlot(base);
-    if (next) {
-      nextSlotText.textContent = `${fmtLocal(next.start)} (kb.)`;
-    } else {
-      nextSlotText.textContent = "Nincs több szabad időpont ma.";
+
+    if (nextSlotText) {
+      nextSlotText.textContent = next ? `${fmtLocal(next.start)} (kb.)` : "Nincs több szabad időpont ma.";
     }
 
     clearSelection();
@@ -318,8 +341,6 @@
 
   // ======= Booking submit (demo) =======
   async function createBookingDemo() {
-    // Itt majd API: POST /api/appointments
-    // Payload: staff_id, service_id, client data, start_at
     const id = `demo_${Math.random().toString(16).slice(2)}`;
 
     booked.push({
@@ -327,50 +348,42 @@
       staffId: state.staffId,
       start: state.selectedStart.toISOString(),
       end: state.selectedEnd.toISOString(),
-      status: "pending",
-      title: "Függő"
+      status: "pending"
     });
 
     return { ok: true, id };
   }
 
   // ======= Events =======
-  themeToggle?.addEventListener("click", () => {
-    const current = html.getAttribute("data-theme") || "dark";
-    const next = current === "dark" ? "light" : "dark";
-    setTheme(next);
-    localStorage.setItem(THEME_KEY, next);
-  });
+  themeToggle?.addEventListener("click", toggleTheme);
 
   scrollToCalendar?.addEventListener("click", () => {
     document.getElementById("booking")?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
-  serviceSelect.addEventListener("change", () => {
+  serviceSelect?.addEventListener("change", () => {
     state.serviceId = Number(serviceSelect.value);
     populateStaff();
     updateSummary();
     refreshCalendar();
   });
 
-  staffSelect.addEventListener("change", () => {
+  staffSelect?.addEventListener("change", () => {
     state.staffId = Number(staffSelect.value);
     updateSummary();
     refreshCalendar();
   });
 
-  applyFiltersBtn.addEventListener("click", () => {
-    refreshCalendar();
-  });
+  applyFiltersBtn?.addEventListener("click", refreshCalendar);
 
-  todayBtn.addEventListener("click", () => {
+  todayBtn?.addEventListener("click", () => {
     calendar?.today();
     setStatus("Ugrás: Ma");
   });
 
-  viewBtns.forEach(btn => {
+  viewBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
-      viewBtns.forEach(b => b.classList.remove("is-active"));
+      viewBtns.forEach((b) => b.classList.remove("is-active"));
       btn.classList.add("is-active");
       const view = btn.getAttribute("data-view");
       calendar?.changeView(view);
@@ -378,21 +391,21 @@
     });
   });
 
-  clearBtn.addEventListener("click", clearSelection);
+  clearBtn?.addEventListener("click", clearSelection);
 
-  bookingForm.addEventListener("submit", async (e) => {
+  bookingForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     if (!canSubmit()) {
       toast("Hiányzó adatok", "Válassz időpontot és ellenőrizd a szolgáltatást/szakembert.");
       return;
     }
-    if (!clientName.value.trim() || !clientPhone.value.trim()) {
+    if (!clientName?.value.trim() || !clientPhone?.value.trim()) {
       toast("Hiányzó adatok", "Név és telefonszám kötelező.");
       return;
     }
 
-    bookBtn.disabled = true;
+    if (bookBtn) bookBtn.disabled = true;
     setStatus("Mentés…");
 
     try {
@@ -401,16 +414,14 @@
       toast("Foglalás rögzítve (demo)", `Azonosító: ${res.id}. (Státusz: függő)`);
       setStatus("Foglalás létrehozva");
 
-      // frissítés
       refreshCalendar();
 
-      // (opcionális) form reset
-      clientNote.value = "";
+      if (clientNote) clientNote.value = "";
     } catch (err) {
       console.error(err);
       toast("Hiba", "Nem sikerült a foglalás. Próbáld újra.");
       setStatus("Hiba történt");
-      bookBtn.disabled = false;
+      if (bookBtn) bookBtn.disabled = false;
     }
   });
 
@@ -420,7 +431,9 @@
 
     // default date = today
     const now = new Date();
-    dateSelect.value = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}`;
+    if (dateSelect) {
+      dateSelect.value = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}`;
+    }
 
     populateServices();
     populateStaff();
