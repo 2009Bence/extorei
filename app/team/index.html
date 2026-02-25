@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Team + Feladat kiosztás</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div>
+        <h1>Csapatok</h1>
+        <p class="muted">Csapat létrehozás, tag hozzáadás email alapján, feladat kiosztás.</p>
+      </div>
+      <button class="btn" id="reloadBtn">Frissítés</button>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <h2>Új csapat</h2>
+        <div class="row">
+          <input id="teamName" class="input" placeholder="Pl. Extorei Sales" maxlength="120" />
+          <button class="btn primary" id="createTeamBtn">Létrehozás</button>
+        </div>
+        <div class="hint">A létrehozó automatikusan owner lesz.</div>
+        <div class="toast" id="toast"></div>
+      </section>
+
+      <section class="card">
+        <h2>Csapat kiválasztása</h2>
+        <select id="teamSelect" class="input"></select>
+
+        <div class="split">
+          <div>
+            <h3>Tag hozzáadása</h3>
+            <div class="row">
+              <input id="memberEmail" class="input" placeholder="tag1@demo.hu" maxlength="190" />
+              <button class="btn" id="addMemberBtn">Hozzáadás</button>
+            </div>
+            <div class="hint">Csak az owner adhat hozzá tagot.</div>
+          </div>
+
+          <div>
+            <h3>Feladat / megbízás</h3>
+            <input id="taskTitle" class="input" placeholder="Feladat címe" maxlength="160" />
+            <textarea id="taskDesc" class="input" placeholder="Leírás (opcionális)"></textarea>
+            <div class="row">
+              <select id="assigneeSelect" class="input"></select>
+              <input id="dueDate" class="input" type="date" />
+            </div>
+            <button class="btn primary" id="createTaskBtn">Feladat létrehozás</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="cardHead">
+          <h2>Tagok</h2>
+          <span class="pill" id="membersCount">0</span>
+        </div>
+        <div id="membersList" class="list"></div>
+      </section>
+
+      <section class="card">
+        <div class="cardHead">
+          <h2>Feladatok</h2>
+          <span class="pill" id="tasksCount">0</span>
+        </div>
+        <div id="tasksList" class="list"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span class="muted">Demo: PHP api.php + MySQL + vanilla JS</span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
