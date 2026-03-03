@@ -210,3 +210,34 @@
     history.pushState(null, "", href);
   });
 })();
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("demoForm");
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const supa = window.supabaseClient;
+    if (!supa) {
+      alert("Supabase még nem állt fel. Frissíts egyet 🙂");
+      return;
+    }
+
+    const name = form.querySelector('input[type="text"]').value.trim();
+    const email = form.querySelector('input[type="email"]').value.trim();
+    const business = form.querySelector("select").value;
+
+    const { error } = await supa.from("leads").insert([
+      { name, email, business_type: business }
+    ]);
+
+    if (error) {
+      console.error(error);
+      alert("Hiba történt 😕 Próbáld újra!");
+      return;
+    }
+
+    form.reset();
+    alert("Köszi! ✅ Megkaptam, hamarosan keresünk.");
+  });
+});
