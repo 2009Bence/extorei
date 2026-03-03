@@ -36,43 +36,38 @@
   function paintTheme(mode) {
     const resolved = resolveTheme(mode);
     html.setAttribute("data-theme", resolved);
-    html.setAttribute("data-theme-mode", mode); // hasznos debug/feature miatt
+    html.setAttribute("data-theme-mode", mode);
 
-    // Toggle UI (ha van)
     const icon = toggle?.querySelector(".theme-toggle__icon");
     const text = toggle?.querySelector(".theme-toggle__text");
 
     if (icon) icon.textContent = resolved === "dark" ? "🌙" : "☀️";
+    if (text) {
+      text.textContent =
+        mode === "system" ? `System (${resolved})` : resolved[0].toUpperCase() + resolved.slice(1);
+    }
 
-    // theme-color meta
-    if (themeMeta) themeMeta.setAttribute("content", resolved === "dark" ? THEME_COLOR_DARK : THEME_COLOR_LIGHT);
+    if (themeMeta) {
+      themeMeta.setAttribute("content", resolved === "dark" ? THEME_COLOR_DARK : THEME_COLOR_LIGHT);
+    }
   }
 
   // ====== THEME INIT + LIVE SYSTEM CHANGE ======
   let themeMode = getStoredTheme();
   paintTheme(themeMode);
 
-  // Ha "system"-en vagy, és a rendszer vált, frissítsünk automatikusan
-  let colorSchemeMQ = null;
   if (window.matchMedia) {
-    colorSchemeMQ = window.matchMedia("(prefers-color-scheme: dark)");
+    const colorSchemeMQ = window.matchMedia("(prefers-color-scheme: dark)");
     const onSystemChange = () => {
       if (themeMode === "system") paintTheme("system");
     };
-    // modern + fallback
     colorSchemeMQ.addEventListener?.("change", onSystemChange);
     colorSchemeMQ.addListener?.(onSystemChange);
   }
 
-  // Toggle: 2 mód (light/dark) vagy 3 mód (system -> light -> dark)
-  // Itt 3 módot adok, mert sokkal jobb UX.
   function cycleThemeMode() {
     themeMode = getStoredTheme();
-    const next =
-      themeMode === "system" ? "light" :
-      themeMode === "light" ? "dark" :
-      "system";
-
+    const next = themeMode === "system" ? "light" : themeMode === "light" ? "dark" : "system";
     localStorage.setItem(THEME_KEY, next);
     themeMode = next;
     paintTheme(themeMode);
@@ -144,7 +139,6 @@
 
     unlockScroll = lockBodyScroll();
 
-    // első fókusz
     const focusables = getFocusable(drawer);
     (focusables[0] || closeBtn || drawer).focus?.();
   }
@@ -159,7 +153,6 @@
     unlockScroll?.();
     unlockScroll = null;
 
-    // fókusz vissza
     lastFocused?.focus?.();
     lastFocused = null;
   }
@@ -171,25 +164,22 @@
 
   closeBtn?.addEventListener("click", closeDrawer);
 
-  // overlay click (ha a drawer maga az overlay)
   drawer?.addEventListener("click", (e) => {
     if (e.target === drawer) closeDrawer();
   });
 
-  // ESC + focus trap
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && drawer?.classList.contains("open")) closeDrawer();
     trapFocus(e);
   });
 
-  // link click -> close (event delegation)
   drawer?.addEventListener("click", (e) => {
     const a = e.target?.closest?.("a");
     if (!a) return;
     closeDrawer();
   });
 
-  // ====== SMOOTH ANCHORS (respects reduced motion) ======
+  // ====== SMOOTH ANCHORS ======
   d.addEventListener("click", (e) => {
     const a = e.target?.closest?.('a[href^="#"]');
     if (!a) return;
@@ -205,39 +195,105 @@
       behavior: prefersReducedMotion() ? "auto" : "smooth",
       block: "start",
     });
-
-    // URL hash update (nice)
     history.pushState(null, "", href);
   });
-})();
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("demoForm");
-  if (!form) return;
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  // ===========================
+  // ✅ SUPABASE INIT (ONLY ONCE)
+  // ===========================
+  async function initSupabase() {
+    if (window.supabaseClient) return window.supabaseClient;
 
-    const supa = window.supabaseClient;
-    if (!supa) {
-      alert("Supabase még nem állt fel. Frissíts egyet 🙂");
-      return;
+    if (!window.supabase?.createClient) {
+      throw new Error("Supabase library nincs betöltve. Kell: <script src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'></script>");
     }
 
-    const name = form.querySelector('input[type="text"]').value.trim();
-    const email = form.querySelector('input[type="email"]').value.trim();
-    const business = form.querySelector("select").value;
+    const r = await fetch("/api/config", { cache: "no-store" });
+    if (!r.ok) throw new Error("Config fetch failed: " + r.status);
 
-    const { error } = await supa.from("leads").insert([
-      { name, email, business_type: business }
-    ]);
+    const cfg = await r.json();
+    if (!cfg?.url || !cfg?.anon) throw new Error("Missing Supabase config (/api/config)");
 
-    if (error) {
-      console.error(error);
-      alert("Hiba történt 😕 Próbáld újra!");
-      return;
-    }
+    window.supabaseClient = window.supabase.createClient(cfg.url, cfg.anon);
 
-    form.reset();
-    alert("Köszi! ✅ Megkaptam, hamarosan keresünk.");
+    console.log("✅ Supabase ready:", cfg.url);
+    document.documentElement.setAttribute("data-supabase", "ready");
+    return window.supabaseClient;
+  }
+
+  // Init azonnal (de nem blokkolja a page-et)
+  initSupabase().catch((e) => {
+    console.error("❌ Supabase init error:", e);
+    document.documentElement.setAttribute("data-supabase", "error");
   });
-});
+
+  // ===========================
+  // ✅ DEMO FORM SUBMIT + DEBUG
+  // ===========================
+  d.addEventListener("DOMContentLoaded", () => {
+    const form = d.getElementById("demoForm");
+    if (!form) return;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      console.log("🚀 DemoForm submit");
+
+      try {
+        const supa = await initSupabase();
+
+        const name = form.querySelector('input[type="text"]')?.value?.trim();
+        const email = form.querySelector('input[type="email"]')?.value?.trim();
+        const business = form.querySelector("select")?.value?.trim();
+
+        console.log("📦 Küldött adatok:", { name, email, business });
+
+        if (!name || !email || !business) {
+          throw new Error("Valamelyik mező üres (name/email/business)");
+        }
+
+        const payload = { name, email, business_type: business };
+
+        const { data, error } = await supa
+          .from("leads")
+          .insert([payload])
+          .select();
+
+        if (error) {
+          console.error("❌ Supabase error:", error);
+
+          const msg = (error.message || "").toLowerCase();
+
+          if (msg.includes("row-level security")) {
+            throw new Error("RLS policy blokkolja az INSERT-et. (Supabase → Policies)");
+          }
+          if (msg.includes("permission denied")) {
+            throw new Error("Nincs jogosultság (permission denied). RLS / grant gond.");
+          }
+          if (msg.includes("column") || msg.includes("does not exist")) {
+            throw new Error("Oszlopnév hiba. Ellenőrizd: business_type pontosan így van-e a táblában.");
+          }
+          if (msg.includes("null value")) {
+            throw new Error("NOT NULL constraint sérül. Valami null/üres mentésre megy.");
+          }
+          if (msg.includes("uuid")) {
+            throw new Error("UUID/ID default hiba. ID default legyen: gen_random_uuid()");
+          }
+
+          // fallback: teljes error message
+          throw new Error(error.message || "Ismeretlen Supabase hiba");
+        }
+
+        console.log("✅ Mentve:", data);
+        form.reset();
+        alert("Köszi! ✅ Lead elmentve a Supabase-be.");
+      } catch (err) {
+        console.error("🔥 Részletes hiba:", err);
+        alert(
+          "Hiba történt 😕\n\n" +
+          (err?.message || "Ismeretlen hiba") +
+          "\n\nNyisd meg: F12 → Console (ott a teljes részlet)."
+        );
+      }
+    });
+  });
+})();
