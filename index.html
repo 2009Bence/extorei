@@ -16,8 +16,10 @@
 </head>
 
 <body>
+  <!-- Top progress blur (decor) -->
   <div class="top-glow" aria-hidden="true"></div>
 
+  <!-- Header -->
   <header class="header" id="top">
     <div class="container header-inner">
       <a class="brand" href="#top" aria-label="Főoldal">
@@ -34,12 +36,14 @@
 
       <div class="header-actions">
         <button class="theme-toggle" id="themeToggle" type="button" aria-label="Téma váltása (light/dark)">
-          <span class="theme-toggle__icon" aria-hidden="true">☀️</span>
+          <span class="theme-toggle__icon" aria-hidden="true">☀</span>
           <span class="theme-toggle__text">Light</span>
         </button>
 
         <a class="btn btn-ghost" href="#demo">Demo kérése</a>
-        <a class="btn btn-primary" href="#start"><span class="btn-long">Ingyen kipróbálom</span></a>
+        <a class="btn btn-primary" href="#start">
+          <span class="btn-long">Ingyen kipróbálom</span>
+        </a>
 
         <button class="hamburger" id="hamburger" type="button" aria-label="Menü megnyitása" aria-expanded="false">
           <span></span><span></span><span></span>
@@ -47,6 +51,7 @@
       </div>
     </div>
 
+    <!-- Mobile menu -->
     <div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
       <div class="mobile-drawer__panel" role="dialog" aria-label="Mobil menü">
         <div class="mobile-drawer__top">
@@ -70,8 +75,9 @@
     </div>
   </header>
 
+  <!-- Main -->
   <main>
-    <!-- HERO -->
+    <!-- Hero -->
     <section class="hero">
       <div class="container hero-grid">
         <div class="hero-copy">
@@ -95,12 +101,30 @@
             <a class="btn btn-primary" href="#demo">Kérek demót</a>
             <a class="btn btn-ghost" href="#pricing">Árazás megnézése</a>
           </div>
+
+          <div class="trust">
+            <div class="trust-item">
+              <span class="trust-kpi">⚡</span>
+              <span class="trust-text">Gyors foglalási flow</span>
+            </div>
+            <div class="trust-item">
+              <span class="trust-kpi">🔒</span>
+              <span class="trust-text">Biztonságos adatok</span>
+            </div>
+            <div class="trust-item">
+              <span class="trust-kpi">📱</span>
+              <span class="trust-text">Mobilra optimalizált</span>
+            </div>
+          </div>
         </div>
 
+        <!-- Hero visual -->
         <div class="hero-visual" aria-hidden="true">
           <div class="glass-card">
             <div class="glass-top">
-              <div class="dots"><span></span><span></span><span></span></div>
+              <div class="dots">
+                <span></span><span></span><span></span>
+              </div>
               <span class="glass-title">Mai naptár</span>
               <span class="glass-badge">+12 foglalás</span>
             </div>
@@ -108,15 +132,39 @@
             <div class="calendar">
               <div class="calendar-row">
                 <span class="t">09:00</span>
-                <div class="appt a1"><b>Balayage + vágás</b><span>Szabó Anna • 2 óra</span></div>
+                <div class="appt a1">
+                  <b>Balayage + vágás</b>
+                  <span>Szabó Anna • 2 óra</span>
+                </div>
               </div>
               <div class="calendar-row">
                 <span class="t">11:30</span>
-                <div class="appt a2"><b>Gél lakk</b><span>Kiss Lili • 60 perc</span></div>
+                <div class="appt a2">
+                  <b>Gél lakk</b>
+                  <span>Kiss Lili • 60 perc</span>
+                </div>
               </div>
               <div class="calendar-row">
                 <span class="t">13:00</span>
-                <div class="appt a3"><b>Kozmetika</b><span>Nagy Dóra • 90 perc</span></div>
+                <div class="appt a3">
+                  <b>Kozmetika</b>
+                  <span>Nagy Dóra • 90 perc</span>
+                </div>
+              </div>
+
+              <div class="mini-stats">
+                <div class="mini">
+                  <span class="mini-k">No-show</span>
+                  <span class="mini-v">−22%</span>
+                </div>
+                <div class="mini">
+                  <span class="mini-k">Átlag kosár</span>
+                  <span class="mini-v">+18%</span>
+                </div>
+                <div class="mini">
+                  <span class="mini-k">Visszatérők</span>
+                  <span class="mini-v">+31%</span>
+                </div>
               </div>
             </div>
           </div>
@@ -128,8 +176,201 @@
       </div>
     </section>
 
-    <!-- FEATURES / HOW / PRICING ... (nálad maradhat ugyanaz) -->
-    <!-- DEMO -->
+    <!-- Logos strip -->
+    <section class="strip">
+      <div class="container strip-inner">
+        <span class="strip-text">Készen áll szalonoknak, egyéni vállalkozóknak és több telephelyre is.</span>
+        <div class="strip-logos" aria-hidden="true">
+          <span>Hair</span><span>Nails</span><span>Beauty</span><span>Massage</span><span>Spa</span><span>Barber</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">/ Funkciók</span>
+          <h2 class="h2">Minden, amit a foglalástól a fizetésig használsz</h2>
+          <p class="sublead">
+            A piacon bevált “all-in-one” modell: foglalás + naptár + fizetés/POS + ügyfélkezelés + marketing/automatizálás.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature">
+            <div class="icon">📅</div>
+            <h3>Online foglalás + okos naptár</h3>
+            <p>Szabályok, szünetek, kapacitás, szolgáltatás-idők, személyzet, több erőforrás (szék/szoba).</p>
+            <ul class="ticks">
+              <li>Gyors foglalási link</li>
+              <li>Áttekinthető heti nézet</li>
+              <li>Ütközésvédelem</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">💳</div>
+            <h3>Fizetés &amp; POS</h3>
+            <p>Egyszerű pénztár, borravaló, számlázási exportok, termékértékesítés, előleg kezelés.</p>
+            <ul class="ticks">
+              <li>Előleg / no-show védelem</li>
+              <li>Termékek és készlet alap</li>
+              <li>Napi zárás riport</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">👥</div>
+            <h3>CRM &amp; vendégprofil</h3>
+            <p>Vendégtörténet, preferenciák, megjegyzések, szokások, visszatérés követése.</p>
+            <ul class="ticks">
+              <li>Okos címkék</li>
+              <li>Érték/gyakoriság szegmensek</li>
+              <li>Gyors visszafoglalás</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">✉️</div>
+            <h3>Automatizálás</h3>
+            <p>Emlékeztetők, visszahívó kampányok, “régen járt nálunk” flow-k — beépítve.</p>
+            <ul class="ticks">
+              <li>Email/SMS sablonok</li>
+              <li>Időzített üzenetek</li>
+              <li>Akciók és kuponok</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">🎁</div>
+            <h3>Csomagok, bérletek, ajándékkártya</h3>
+            <p>Új bevételi lábak: előre fizetett csomagok és ajándékozás, egyszerű beváltással.</p>
+            <ul class="ticks">
+              <li>Rugalmas csomagok</li>
+              <li>Lejárat kezelése</li>
+              <li>Ajándékkártya kódok</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">📈</div>
+            <h3>Riportok, teljesítmény, növekedés</h3>
+            <p>Bevétel, kihasználtság, visszatérők, szolgáltatás-toplista, csapat teljesítmény.</p>
+            <ul class="ticks">
+              <li>Heti összefoglalók</li>
+              <li>Szolgáltatás profitability</li>
+              <li>Exportok</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section soft" id="how">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">/ Hogyan működik</span>
+          <h2 class="h2">3 lépés, és él a rendszer</h2>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <span class="step-n">01</span>
+            <h3>Beállítod a szolgáltatásokat</h3>
+            <p>Időtartamok, árak, személyzet, erőforrások — 10–15 perc.</p>
+          </div>
+          <div class="step">
+            <span class="step-n">02</span>
+            <h3>Megosztod a foglalási linket</h3>
+            <p>Website, Instagram bio, Google profil, QR kód a pultnál.</p>
+          </div>
+          <div class="step">
+            <span class="step-n">03</span>
+            <h3>Automatizálsz és növekedsz</h3>
+            <p>Emlékeztetők, utánkövetés, visszahívás — kevesebb no-show.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="section" id="pricing">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">/ Árazás</span>
+          <h2 class="h2">Egyszerű csomagok, amik veled nőnek</h2>
+          <p class="sublead">Light alapból, Dark egy kattintás — mobilon is tökéletes.</p>
+        </div>
+
+        <div class="pricing">
+          <article class="plan">
+            <div class="plan-top">
+              <h3>Solo</h3>
+              <p class="muted">Egyéni vállalkozóknak</p>
+              <div class="price">
+                <span class="amount">9 990</span>
+                <span class="unit">Ft / hó</span>
+              </div>
+            </div>
+            <ul class="plan-list">
+              <li>Online foglalás</li>
+              <li>Naptár</li>
+              <li>Automatikus emlékeztetők</li>
+              <li>Alap riportok</li>
+            </ul>
+            <a class="btn btn-ghost btn-block" href="#demo">Kérek demót</a>
+          </article>
+
+          <article class="plan featured">
+            <div class="plan-badge">Legnépszerűbb</div>
+            <div class="plan-top">
+              <h3>Studio</h3>
+              <p class="muted">Kis csapatoknak</p>
+              <div class="price">
+                <span class="amount">24 990</span>
+                <span class="unit">Ft / hó</span>
+              </div>
+            </div>
+            <ul class="plan-list">
+              <li>Minden a Solo-ból</li>
+              <li>POS &amp; előleg kezelés</li>
+              <li>CRM szegmensek</li>
+              <li>Csomagok &amp; ajándékkártya</li>
+            </ul>
+            <a class="btn btn-primary btn-block" href="#demo">Ingyen kipróbálom</a>
+          </article>
+
+          <article class="plan">
+            <div class="plan-top">
+              <h3>Multi</h3>
+              <p class="muted">Több telephelyre</p>
+              <div class="price">
+                <span class="amount">Egyedi</span>
+                <span class="unit"> / ajánlat</span>
+              </div>
+            </div>
+            <ul class="plan-list">
+              <li>Telephely kezelés</li>
+              <li>Jogosultságok</li>
+              <li>Haladó riportok</li>
+              <li>Onboarding támogatás</li>
+            </ul>
+            <a class="btn btn-ghost btn-block" href="#demo">Kapcsolat</a>
+          </article>
+        </div>
+
+        <div class="pricing-note">
+          <p class="tiny muted">
+            Tipp: Ha szeretnéd, össze tudjuk rakni úgy is, hogy “foglalható munkatárs” alapú legyen (team member pricing),
+            mert ez tipikus modell ebben a piaci kategóriában.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Demo / CTA -->
     <section class="section soft" id="demo">
       <div class="container">
         <div class="cta-card">
@@ -173,6 +414,36 @@
       </div>
     </section>
 
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">/ GYIK</span>
+          <h2 class="h2">Kérdések, amik mindig előjönnek</h2>
+        </div>
+
+        <div class="faq">
+          <details>
+            <summary>Lehet előleget kérni foglaláskor?</summary>
+            <p>Igen. Beállítható szolgáltatásonként, illetve szabályokkal (pl. új vendégnek kötelező).</p>
+          </details>
+          <details>
+            <summary>Van CRM és vendégtörténet?</summary>
+            <p>Igen, vendégprofil, jegyzetek, címkék, visszatérési adatok és szegmensek.</p>
+          </details>
+          <details>
+            <summary>Mobilon is tökéletes?</summary>
+            <p>Igen. A landing és a foglalási flow is mobil-first, és a menü/téma váltó is touch-barát.</p>
+          </details>
+          <details>
+            <summary>Light/Dark mód megjegyzi a választást?</summary>
+            <p>Igen, localStorage-ben mentjük, és a rendszer témáját is figyelembe vesszük első látogatáskor.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
     <footer class="footer">
       <div class="container footer-inner">
         <div class="footer-left">
@@ -193,29 +464,29 @@
     </footer>
   </main>
 
-  <!-- ✅ 1) Supabase JS csak egyszer -->
+  <!-- ✅ Supabase (CSAK 1x) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- ✅ 2) Init csak egyszer + export: window.__supaReady -->
+  <!-- ✅ Supabase init (CSAK 1x) /api/config-ból -->
   <script>
-    window.__supaReady = (async () => {
-      const r = await fetch("/api/config", { cache: "no-store" });
-      if (!r.ok) throw new Error("Config fetch failed: " + r.status);
-      const cfg = await r.json();
-      if (!cfg?.url || !cfg?.anon) throw new Error("Missing Supabase config");
+    (async () => {
+      try {
+        const r = await fetch("/api/config", { cache: "no-store" });
+        if (!r.ok) throw new Error("Config fetch failed: " + r.status);
 
-      // nagyon fontos: itt a window (nem windows)
-      window.supabaseClient = window.supabase.createClient(cfg.url, cfg.anon);
+        const cfg = await r.json();
+        if (!cfg?.url || !cfg?.anon) throw new Error("Missing Supabase config");
 
-      console.log("✅ Supabase ready:", cfg.url);
-      return window.supabaseClient;
-    })().catch((e) => {
-      console.error("❌ Supabase init failed:", e);
-      throw e;
-    });
+        window.supabaseClient = window.supabase.createClient(cfg.url, cfg.anon);
+        console.log("✅ Supabase ready");
+      } catch (e) {
+        console.error("❌ Supabase init error", e);
+        alert("Supabase init error – nézd a Console-t (F12)!");
+      }
+    })();
   </script>
 
-  <!-- ✅ 3) App JS -->
+  <!-- A te JS-ed -->
   <script src="index.js"></script>
 </body>
 </html>
