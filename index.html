@@ -486,7 +486,17 @@
       </div>
     </footer>
   </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  (async () => {
+    const r = await fetch("/api/config");
+    const cfg = await r.json();
+    window.supabaseClient = window.supabase.createClient(cfg.url, cfg.anon);
+    console.log("✅ Supabase ready");
+  })();
+</script>
 
+<script src="index.js"></script>
   <script src="index.js"></script>
 <!-- Supabase (CDN) + init Vercel /api/config-ból -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
