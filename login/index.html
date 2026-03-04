@@ -1,112 +1,88 @@
-<!DOCTYPE html>
-<html lang="hu" data-theme="light">
+<!doctype html>
+<html lang="hu">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bejelentkezés | EXTOREI BeautySuite</title>
-  <meta name="theme-color" content="#ffffff" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="login.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Belépés | EXTOREI</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body{font-family:system-ui;background:#070914;color:#fff;display:grid;place-items:center;min-height:100vh;margin:0}
+    .card{width:min(420px,92vw);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:18px}
+    input,button{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.25);color:#fff}
+    button{cursor:pointer;margin-top:10px;background:rgba(124,92,255,.35)}
+    .row{display:grid;gap:10px}
+    .muted{opacity:.75;font-size:14px}
+    pre{white-space:pre-wrap;word-break:break-word;background:rgba(0,0,0,.25);padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.12)}
+  </style>
 </head>
-
 <body>
-  <!-- Multi-layer animated background -->
-  <div class="bg">
-    <canvas id="bg"></canvas>
-    <div class="aurora a1" aria-hidden="true"></div>
-    <div class="aurora a2" aria-hidden="true"></div>
-    <div class="aurora a3" aria-hidden="true"></div>
-    <div class="noise" aria-hidden="true"></div>
-    <div class="vignette" aria-hidden="true"></div>
+  <div class="card">
+    <h2>Belépés / Regisztráció</h2>
+    <p class="muted">A demo használatához be kell jelentkezned. Regisztrációkor automatikusan indul a 14 nap próba.</p>
+
+    <div class="row">
+      <input id="email" type="email" placeholder="Email" autocomplete="email" required />
+      <input id="pass" type="password" placeholder="Jelszó" autocomplete="current-password" required />
+      <button id="loginBtn">Belépés</button>
+      <button id="signupBtn">Regisztráció (14 nap próba)</button>
+      <button id="logoutBtn" style="background:rgba(255,255,255,.08)">Kijelentkezés</button>
+      <pre id="out">Betöltés...</pre>
+    </div>
   </div>
 
-  <header class="topbar">
-    <a class="brand" href="index.html" aria-label="Vissza a főoldalra">
-      <span class="brand-mark">E</span>
-      <span class="brand-text">EXTOREI <b>BeautySuite</b></span>
-    </a>
+<script>
+(async () => {
+  const out = document.getElementById("out");
+  const emailEl = document.getElementById("email");
+  const passEl  = document.getElementById("pass");
 
-    <div class="top-actions">
-      <button class="chip" type="button" id="reduceMotion" aria-label="Animációk csökkentése">⚡ Smooth</button>
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Téma váltása (light/dark)">
-        <span class="theme-toggle__icon" aria-hidden="true">☀</span>
-        <span class="theme-toggle__text">Light</span>
-      </button>
-    </div>
-  </header>
+  const cfgRes = await fetch("/api/config", { cache: "no-store" });
+  if (!cfgRes.ok) throw new Error("Config fetch failed: " + cfgRes.status);
+  const cfg = await cfgRes.json();
+  if (!cfg.url || !cfg.anon) throw new Error("Hiányzó env: NEXT_PUBLIC_SUPABASE_URL / ANON_KEY");
 
-  <main class="wrap">
-    <section class="card" id="tiltCard" aria-label="Bejelentkezés">
-      <div class="card-shine" aria-hidden="true"></div>
+  const supa = window.supabase.createClient(cfg.url, cfg.anon);
 
-      <div class="card-head">
-        <h1>Bejelentkezés</h1>
-        <p>Gyors, elegáns, automatikus — a szalonod új vezérlőpultja.</p>
-      </div>
+  async function showSession() {
+    const { data } = await supa.auth.getSession();
+    out.textContent = data.session
+      ? "Be vagy jelentkezve ✅\nUser: " + data.session.user.id
+      : "Nem vagy bejelentkezve.";
+  }
 
-      <form class="form" onsubmit="event.preventDefault(); alert('Demo: ide jön majd az auth API.');">
-        <label class="field">
-          <span>Email</span>
-          <input type="email" required placeholder="szalon@ceg.hu" autocomplete="email" />
-        </label>
+  document.getElementById("loginBtn").addEventListener("click", async () => {
+    out.textContent = "Belépés...";
+    const email = emailEl.value.trim();
+    const password = passEl.value;
 
-        <label class="field">
-          <span>Jelszó</span>
-          <div class="pw">
-            <input id="pw" type="password" required placeholder="••••••••" autocomplete="current-password" />
-            <button class="pw-toggle" id="pwToggle" type="button" aria-label="Jelszó megjelenítése">👁</button>
-          </div>
-        </label>
+    const { error } = await supa.auth.signInWithPassword({ email, password });
+    if (error) { out.textContent = "Hiba: " + error.message; return; }
 
-        <div class="row">
-          <label class="check">
-            <input type="checkbox" />
-            <span>Emlékezz rám</span>
-          </label>
-          <a class="link" href="#">Elfelejtett jelszó?</a>
-        </div>
+    out.textContent = "OK ✅";
+    location.href = "/index.html";
+  });
 
-        <button class="btn btn-primary" type="submit">
-          <span>Belépek</span>
-          <span class="btn-arrow" aria-hidden="true">→</span>
-        </button>
+  document.getElementById("signupBtn").addEventListener("click", async () => {
+    out.textContent = "Regisztráció...";
+    const email = emailEl.value.trim();
+    const password = passEl.value;
 
-        <div class="divider"><span>vagy</span></div>
+    const { error } = await supa.auth.signUp({ email, password });
+    if (error) { out.textContent = "Hiba: " + error.message; return; }
 
-        <button class="btn btn-ghost" type="button" onclick="alert('Demo: Google login')">
-          <span class="g-dot" aria-hidden="true"></span>
-          Belépés Google-lel
-        </button>
+    out.textContent =
+      "Regisztráció OK ✅\nHa email-confirm be van kapcsolva, nézd meg az emailedet és erősítsd meg.";
+  });
 
-        <p class="bottom">
-          Nincs még fiókod?
-          <a class="link" href="index.html#demo">Kérj demót</a>
-        </p>
-      </form>
-    </section>
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await supa.auth.signOut();
+    await showSession();
+  });
 
-    <aside class="side">
-      <div class="side-card">
-        <h2>Tele naptár. Kevesebb káosz.</h2>
-        <p>Időpontok, előleg, automatizmusok, kampányok — mind egy helyen.</p>
-
-        <div class="mini-kpis">
-          <div class="kpi"><span class="k">No-show</span><span class="v">−22%</span></div>
-          <div class="kpi"><span class="k">Átlag kosár</span><span class="v">+18%</span></div>
-          <div class="kpi"><span class="k">Visszatérők</span><span class="v">+31%</span></div>
-        </div>
-
-        <div class="pulse-pill" aria-hidden="true">
-          <span class="dot"></span> Live: 12 foglalás ma
-        </div>
-      </div>
-    </aside>
-  </main>
-
-  <script src="login.js"></script>
+  await showSession();
+})().catch(err => {
+  document.getElementById("out").textContent = "Init hiba: " + err.message;
+});
+</script>
 </body>
 </html>
