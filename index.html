@@ -4,20 +4,57 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
   <title>EXTOREI BeautySuite | Időpontfoglalás + POS + CRM szépségszalonoknak</title>
   <meta name="description" content="All-in-one SaaS szépségvállalkozásoknak: online foglalás, naptár, POS, ügyfélkezelés, automatizált üzenetek, csomagok és riportok." />
   <meta name="theme-color" content="#ffffff" />
 
+  <!-- Social / OpenGraph -->
+  <meta property="og:title" content="EXTOREI BeautySuite" />
+  <meta property="og:description" content="Foglalás + POS + CRM + automatizálás: egy helyen." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="hu_HU" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Syncopate:wght@400;700&display=swap" rel="stylesheet" />
 
+  <!-- Styles -->
   <link rel="stylesheet" href="styles.css" />
+
+  <!-- Small helpers (no external deps) -->
+  <style>
+    /* Optional minimal additions (ha a styles.css-ben nincs még) */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .skip-link{position:absolute;left:-999px;top:10px;z-index:9999}
+    .skip-link:focus{left:10px;background:#000;color:#fff;padding:10px;border-radius:10px}
+    .badge{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18)}
+    .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New";font-size:.9em;padding:.15em .45em;border-radius:8px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.12)}
+    .divider{height:1px;background:rgba(255,255,255,.12);margin:18px 0}
+    .notice{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);border-radius:16px;padding:14px}
+    .tiny-link{opacity:.8;text-decoration:underline;text-underline-offset:3px}
+  </style>
 </head>
 
 <body>
+  <a class="skip-link" href="#main">Ugrás a tartalomra</a>
+
   <!-- Top progress blur (decor) -->
   <div class="top-glow" aria-hidden="true"></div>
+
+  <!-- Announcement bar -->
+  <div class="announcement" role="status" aria-live="polite">
+    <div class="container announcement-inner">
+      <span class="badge">✨ Új: 14 nap próba</span>
+      <span class="announcement-text">
+        A demó csak belépés után érhető el. Regisztrációkor automatikusan indul a <b>14 napos próbaidő</b>.
+      </span>
+      <a class="tiny-link" href="#pricing">Árazás</a>
+      <button class="announcement-close" type="button" aria-label="Értesítés bezárása" data-ann-close>✕</button>
+    </div>
+  </div>
 
   <!-- Header -->
   <header class="header" id="top">
@@ -30,6 +67,8 @@
       <nav class="nav-desktop" aria-label="Fő navigáció">
         <a href="#features">Funkciók</a>
         <a href="#how">Hogyan működik</a>
+        <a href="#deepdive">Részletek</a>
+        <a href="#integrations">Integrációk</a>
         <a href="#pricing">Árazás</a>
         <a href="#faq">GYIK</a>
       </nav>
@@ -62,6 +101,8 @@
         <nav class="mobile-nav" aria-label="Mobil navigáció">
           <a href="#features" class="m-link">Funkciók</a>
           <a href="#how" class="m-link">Hogyan működik</a>
+          <a href="#deepdive" class="m-link">Részletek</a>
+          <a href="#integrations" class="m-link">Integrációk</a>
           <a href="#pricing" class="m-link">Árazás</a>
           <a href="#faq" class="m-link">GYIK</a>
           <a href="#demo" class="m-link">Demo kérése</a>
@@ -75,8 +116,13 @@
     </div>
   </header>
 
+  <!-- Sticky CTA (mobile) -->
+  <div class="sticky-cta" aria-label="Gyors műveletek">
+    <a class="btn btn-primary btn-block" href="#demo">Kérek demót</a>
+  </div>
+
   <!-- Main -->
-  <main>
+  <main id="main">
     <!-- Hero -->
     <section class="hero">
       <div class="container hero-grid">
@@ -85,6 +131,7 @@
             <span class="pill">Online foglalás</span>
             <span class="pill">POS &amp; fizetés</span>
             <span class="pill">CRM &amp; automatizálás</span>
+            <span class="pill">14 nap próba</span>
           </div>
 
           <h1 class="h1">
@@ -99,7 +146,7 @@
 
           <div class="hero-cta" id="start">
             <a class="btn btn-primary" href="#demo">Kérek demót</a>
-            <a class="btn btn-ghost" href="#pricing">Árazás megnézése</a>
+            <button class="btn btn-ghost" type="button" data-open-modal="videoModal">Nézd meg (1 perc)</button>
           </div>
 
           <div class="trust">
@@ -109,12 +156,18 @@
             </div>
             <div class="trust-item">
               <span class="trust-kpi">🔒</span>
-              <span class="trust-text">Biztonságos adatok</span>
+              <span class="trust-text">RLS &amp; biztonság</span>
             </div>
             <div class="trust-item">
               <span class="trust-kpi">📱</span>
-              <span class="trust-text">Mobilra optimalizált</span>
+              <span class="trust-text">Mobil-first élmény</span>
             </div>
+          </div>
+
+          <div class="notice" style="margin-top:16px">
+            <b>Pro tipp:</b> A demó használatához be kell lépni. Ha még nincs fiókod, regisztrációkor automatikus a 14 nap próba.
+            <div class="divider"></div>
+            <span class="muted">Gyorsbillentyűk: <span class="kbd">Alt</span> + <span class="kbd">D</span> (Demo), <span class="kbd">Alt</span> + <span class="kbd">A</span> (Árazás)</span>
           </div>
         </div>
 
@@ -182,6 +235,52 @@
         <span class="strip-text">Készen áll szalonoknak, egyéni vállalkozóknak és több telephelyre is.</span>
         <div class="strip-logos" aria-hidden="true">
           <span>Hair</span><span>Nails</span><span>Beauty</span><span>Massage</span><span>Spa</span><span>Barber</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Proof stats -->
+    <section class="section soft" id="proof">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">/ Bizonyíték</span>
+          <h2 class="h2">Mérhető eredmény, nem csak “szép UI”</h2>
+          <p class="sublead">Ezek tipikus eredmények, amikor a foglalás + emlékeztetők + POS egy helyen van.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature">
+            <div class="icon">📉</div>
+            <h3>Kevesebb no-show</h3>
+            <p>Automatikus emlékeztetőkkel és előleggel csökken a kihagyott időpont.</p>
+            <ul class="ticks">
+              <li>SMS/email sablonok</li>
+              <li>Időzítés állítható</li>
+              <li>Új vendég szabályok</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">⏱️</div>
+            <h3>Gyorsabb admin</h3>
+            <p>Nincs szétszórt excel/üzenetek: minden a vendégprofilban.</p>
+            <ul class="ticks">
+              <li>Gyors visszafoglalás</li>
+              <li>Megjegyzések &amp; címkék</li>
+              <li>Automatikus follow-up</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">💰</div>
+            <h3>Nagyobb átlag kosár</h3>
+            <p>Csomagok, bérletek, termékek: több bevételi láb.</p>
+            <ul class="ticks">
+              <li>Csomag logika</li>
+              <li>Ajándékkártyák</li>
+              <li>POS add-onok</li>
+            </ul>
+          </article>
         </div>
       </div>
     </section>
@@ -267,8 +366,93 @@
       </div>
     </section>
 
+    <!-- Deep Dive -->
+    <section class="section soft" id="deepdive">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">/ Részletek</span>
+          <h2 class="h2">Kiterjesztett “SaaS landing” blokkok</h2>
+          <p class="sublead">Itt vannak a mélyebb részek: onboarding, jogosultságok, biztonság, sablonok, use-case-ek.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature">
+            <div class="icon">🧭</div>
+            <h3>Onboarding &amp; setup</h3>
+            <p>3 lépéses wizard: szolgáltatások, személyzet, nyitvatartás, foglalási szabályok.</p>
+            <ul class="ticks">
+              <li>Előre kitöltött sablonok</li>
+              <li>Gyors import (CSV)</li>
+              <li>Branding: színek &amp; logó</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">🧑‍🤝‍🧑</div>
+            <h3>Jogosultságok</h3>
+            <p>Owner / Manager / Staff szerepkörök: ki mit láthat, mit szerkeszthet.</p>
+            <ul class="ticks">
+              <li>Hozzáférés szintek</li>
+              <li>Audit log (terv)</li>
+              <li>Telephely alapú szűrés</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">🛡️</div>
+            <h3>Biztonság</h3>
+            <p>RLS policy-k, secure session, rate limit szemlélet (API-n). GDPR alapok.</p>
+            <ul class="ticks">
+              <li>RLS alapú védelem</li>
+              <li>Token kezelés</li>
+              <li>Hiba &amp; esemény napló</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">🧩</div>
+            <h3>Sablonok</h3>
+            <p>SMS/Email sablonok, automatikus üzenetek, kupon kampányok.</p>
+            <ul class="ticks">
+              <li>Időzített emlékeztetők</li>
+              <li>“Régen járt nálunk” flow</li>
+              <li>Új vendég üdvözlés</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">🧾</div>
+            <h3>Riport csomagok</h3>
+            <p>Daily / Weekly / Monthly: revenue, kihasználtság, csapat teljesítmény.</p>
+            <ul class="ticks">
+              <li>Export (CSV)</li>
+              <li>Szűrés szolgáltatásra</li>
+              <li>Top vendégek</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">🧠</div>
+            <h3>AI-ready (később)</h3>
+            <p>Ajánlott időpontok, no-show előrejelzés, ügyfél visszahívás javaslatok.</p>
+            <ul class="ticks">
+              <li>Okos slot ajánlás</li>
+              <li>Mintázat figyelés</li>
+              <li>Automatikus text javaslat</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="notice">
+          <b>Tech megjegyzés:</b> A demó “gating” RLS-sel történik (trial lejárat → DB blokkol). A kliens oldalon pedig redirectelünk paywallra.
+        </div>
+      </div>
+    </section>
+
     <!-- How it works -->
-    <section class="section soft" id="how">
+    <section class="section" id="how">
       <div class="container">
         <div class="section-head">
           <span class="eyebrow">/ Hogyan működik</span>
@@ -291,6 +475,97 @@
             <h3>Automatizálsz és növekedsz</h3>
             <p>Emlékeztetők, utánkövetés, visszahívás — kevesebb no-show.</p>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Integrations -->
+    <section class="section soft" id="integrations">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">/ Integrációk</span>
+          <h2 class="h2">Kapcsolódj a kedvenc eszközeidhez</h2>
+          <p class="sublead">Naptár, fizetés, üzenetküldés, analitika — amit használsz, azt összekötjük.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature">
+            <div class="icon">📆</div>
+            <h3>Google Calendar</h3>
+            <p>Szinkron, foglalások visszaírása, staff naptárak kezelése.</p>
+            <ul class="ticks">
+              <li>2-way sync</li>
+              <li>Ütközés figyelés</li>
+              <li>Privát slotok</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">💳</div>
+            <h3>Stripe</h3>
+            <p>Előleg, előfizetés, checkout: paywall és trial után automata gating.</p>
+            <ul class="ticks">
+              <li>Checkout link</li>
+              <li>Webhooks</li>
+              <li>Számlázás alap</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">📨</div>
+            <h3>Email/SMS</h3>
+            <p>Később: Twilio / Brevo / Mailgun. Most: sablonok és flow tervek.</p>
+            <ul class="ticks">
+              <li>Reminder</li>
+              <li>Follow-up</li>
+              <li>Reactivation</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison table -->
+    <section class="section" id="compare">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">/ Összehasonlítás</span>
+          <h2 class="h2">Miért all-in-one?</h2>
+          <p class="sublead">Kevesebb eszköz = kevesebb hiba és több automatizálás.</p>
+        </div>
+
+        <div class="notice" role="region" aria-label="Összehasonlító táblázat">
+          <table class="compare-table" style="width:100%;border-collapse:collapse">
+            <thead>
+              <tr>
+                <th style="text-align:left;padding:12px;border-bottom:1px solid rgba(255,255,255,.12)">Funkció</th>
+                <th style="text-align:left;padding:12px;border-bottom:1px solid rgba(255,255,255,.12)">Szétszórt eszközök</th>
+                <th style="text-align:left;padding:12px;border-bottom:1px solid rgba(255,255,255,.12)">BeautySuite</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding:12px;border-bottom:1px solid rgba(255,255,255,.08)">Foglalás + naptár</td>
+                <td style="padding:12px;border-bottom:1px solid rgba(255,255,255,.08)">Több helyen, duplikált adat</td>
+                <td style="padding:12px;border-bottom:1px solid rgba(255,255,255,.08)">Egy rendszer, ütközésvédelem</td>
+              </tr>
+              <tr>
+                <td style="padding:12px;border-bottom:1px solid rgba(255,255,255,.08)">POS + előleg</td>
+                <td style="padding:12px;border-bottom:1px solid rgba(255,255,255,.08)">Külön számlázás/terminál</td>
+                <td style="padding:12px;border-bottom:1px solid rgba(255,255,255,.08)">Beépítve, automata szabályok</td>
+              </tr>
+              <tr>
+                <td style="padding:12px;border-bottom:1px solid rgba(255,255,255,.08)">Automatizálás</td>
+                <td style="padding:12px;border-bottom:1px solid rgba(255,255,255,.08)">Manuális üzenetküldés</td>
+                <td style="padding:12px;border-bottom:1px solid rgba(255,255,255,.08)">Flow + sablonok</td>
+              </tr>
+              <tr>
+                <td style="padding:12px;border-bottom:1px solid rgba(255,255,255,.08)">Riportok</td>
+                <td style="padding:12px;border-bottom:1px solid rgba(255,255,255,.08)">Excel + sok idő</td>
+                <td style="padding:12px;border-bottom:1px solid rgba(255,255,255,.08)">Azonnali dashboard</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
@@ -370,6 +645,52 @@
       </div>
     </section>
 
+    <!-- Testimonials -->
+    <section class="section soft" id="testimonials">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">/ Vélemények</span>
+          <h2 class="h2">Mit mondanak a szalonok?</h2>
+          <p class="sublead">Rövid idézetek, fókusz: no-show, admin, bevétel.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature">
+            <div class="icon">⭐</div>
+            <h3>“Végre átlátható.”</h3>
+            <p>“A vendégtörténet + emlékeztetők együtt rengeteg időt spórolnak.”</p>
+            <ul class="ticks">
+              <li>Budapest • Nails</li>
+              <li>2 fős csapat</li>
+              <li>30% kevesebb no-show</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">⭐</div>
+            <h3>“Több visszatérő.”</h3>
+            <p>“A follow-up üzenetek miatt többen foglalnak újra.”</p>
+            <ul class="ticks">
+              <li>Győr • Hair</li>
+              <li>4 fős csapat</li>
+              <li>+18% átlag kosár</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">⭐</div>
+            <h3>“Kevesebb káosz.”</h3>
+            <p>“Nem kell 3 külön app, minden itt van.”</p>
+            <ul class="ticks">
+              <li>Szeged • Beauty</li>
+              <li>1 telephely</li>
+              <li>Heti 2 óra admin spórolás</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <!-- Demo / CTA -->
     <section class="section soft" id="demo">
       <div class="container">
@@ -382,6 +703,15 @@
               <span class="pill">Naptár</span>
               <span class="pill">POS</span>
               <span class="pill">Automatizmusok</span>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="notice">
+              <b>Figyelem:</b> a demó 14 napig érhető el belépés után. Lejáratkor paywall jelenik meg.
+              <div class="tiny muted" style="margin-top:6px">
+                Ha még nincs fiókod: <a class="tiny-link" href="./login/index.html">Regisztráció</a>
+              </div>
             </div>
           </div>
 
@@ -439,51 +769,231 @@
             <summary>Light/Dark mód megjegyzi a választást?</summary>
             <p>Igen, localStorage-ben mentjük, és a rendszer témáját is figyelembe vesszük első látogatáskor.</p>
           </details>
+          <details>
+            <summary>Mi történik a 14 nap próba után?</summary>
+            <p>Lejárat után a demó nem elérhető. A rendszer paywallra irányít, és előfizetéssel aktiválható újra.</p>
+          </details>
+          <details>
+            <summary>Mennyire biztonságos?</summary>
+            <p>Adatbázis oldalon RLS policy-k védik az adatokat, a hozzáférés belépéshez kötött.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Security -->
+    <section class="section soft" id="security">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">/ Security</span>
+          <h2 class="h2">Biztonság &amp; megfelelőség</h2>
+          <p class="sublead">A cél: “secure by default” – minimális jogosultság, naplózás, védett adatok.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature">
+            <div class="icon">🔐</div>
+            <h3>Belépés &amp; session</h3>
+            <p>Supabase Auth, tokenek kezelése, session ellenőrzés minden érzékeny művelet előtt.</p>
+            <ul class="ticks">
+              <li>Auth session check</li>
+              <li>Redirect loginra</li>
+              <li>Trial gating</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">🧱</div>
+            <h3>RLS policy</h3>
+            <p>A DB oldalon történik a végső ellenőrzés: trial lejárt → blokkol.</p>
+            <ul class="ticks">
+              <li>INSERT/SELECT kontroll</li>
+              <li>has_active_access()</li>
+              <li>Audit-friendly felépítés</li>
+            </ul>
+          </article>
+
+          <article class="feature">
+            <div class="icon">🧯</div>
+            <h3>Rate limit szemlélet</h3>
+            <p>Később API oldalon: basic rate limit + bot védelem a formokra.</p>
+            <ul class="ticks">
+              <li>IP alap (terv)</li>
+              <li>Hibalogging</li>
+              <li>Anti-spam</li>
+            </ul>
+          </article>
         </div>
       </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
       <div class="container footer-inner">
         <div class="footer-left">
           <div class="brand-mini">EXTOREI BeautySuite</div>
           <p class="tiny muted">All-in-one foglalás + POS + CRM szépségvállalkozásoknak.</p>
+          <div class="divider"></div>
+          <div class="tiny muted">
+            Support: <a class="tiny-link" href="#demo">Demo kérés</a> •
+            <a class="tiny-link" href="./login/index.html">Belépés</a>
+          </div>
         </div>
+
         <div class="footer-links">
           <a href="#features">Funkciók</a>
           <a href="#pricing">Árazás</a>
           <a href="#demo">Demo</a>
+          <a href="#security">Security</a>
           <a href="#top">Vissza a tetejére</a>
         </div>
       </div>
+
       <div class="container footer-bottom">
         <span class="tiny muted">© 2026 EXTOREI</span>
         <span class="tiny muted">Light/Dark • Responsive • Fast</span>
       </div>
     </footer>
+
+    <!-- Back to top -->
+    <button class="back-to-top" type="button" aria-label="Vissza a tetejére" data-top>↑</button>
   </main>
+
+  <!-- Cookie banner -->
+  <div class="cookie" role="dialog" aria-label="Cookie beállítások" aria-modal="true" hidden>
+    <div class="cookie-card">
+      <h3>Cookie-k 🍪</h3>
+      <p class="muted">A jobb élményért használunk alap működéshez szükséges cookie-kat és (opcionálisan) analitikát.</p>
+      <div class="cookie-actions">
+        <button class="btn btn-ghost" type="button" data-cookie-reject>Elutasítom</button>
+        <button class="btn btn-primary" type="button" data-cookie-accept>Elfogadom</button>
+      </div>
+      <p class="tiny muted">Később a láblécben módosíthatod.</p>
+    </div>
+  </div>
+
+  <!-- Video modal -->
+  <div class="modal" id="videoModal" role="dialog" aria-label="Videó" aria-modal="true" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-panel">
+      <div class="modal-top">
+        <b>1 perces bemutató</b>
+        <button class="modal-close" type="button" aria-label="Bezárás" data-close-modal>✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="notice">
+          <p class="muted">
+            Ide később be tudsz tenni egy YouTube/Vimeo embedet.
+            Most csak placeholder, hogy meglegyen a “pro landing” scaffolding.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <noscript>
+    <div class="container" style="padding:18px">
+      <div class="notice">
+        <b>JavaScript ki van kapcsolva.</b> A demo és bejelentkezés működéséhez JavaScript szükséges.
+      </div>
+    </div>
+  </noscript>
 
   <!-- ✅ Supabase (CSAK 1x) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- ✅ Supabase init (CSAK 1x) /api/config-ból -->
+  <!-- ✅ Globális útvonalak -->
   <script>
-    (async () => {
-      try {
-        const r = await fetch("/api/config", { cache: "no-store" });
-        if (!r.ok) throw new Error("Config fetch failed: " + r.status);
+    window.EXTOREI_PATHS = {
+      login: "./login/index.html",
+      paywall: "./paywall.html"
+    };
+  </script>
 
-        const cfg = await r.json();
-        if (!cfg?.url || !cfg?.anon) throw new Error("Missing Supabase config");
+  <!-- ✅ Supabase init helper (index.js ebből dolgozik) -->
+  <script>
+    (function () {
+      let _clientPromise = null;
 
-        window.supabaseClient = window.supabase.createClient(cfg.url, cfg.anon);
-        console.log("✅ Supabase ready");
-      } catch (e) {
-        console.error("❌ Supabase init error", e);
-        alert("Supabase init error – nézd a Console-t (F12)!");
-      }
+      window.getSupa = async function getSupa() {
+        if (window.supabaseClient) return window.supabaseClient;
+        if (_clientPromise) return _clientPromise;
+
+        _clientPromise = (async () => {
+          if (!window.supabase || !window.supabase.createClient) {
+            throw new Error("Supabase library nincs betöltve.");
+          }
+
+          const r = await fetch("/api/config", { cache: "no-store" });
+          if (!r.ok) throw new Error("Config fetch failed: " + r.status);
+
+          const cfg = await r.json();
+          if (!cfg?.url || !cfg?.anon) throw new Error("Missing Supabase config (/api/config)");
+
+          window.supabaseClient = window.supabase.createClient(cfg.url, cfg.anon);
+          console.log("✅ Supabase ready:", cfg.url);
+          document.documentElement.setAttribute("data-supabase", "ready");
+          return window.supabaseClient;
+        })();
+
+        return _clientPromise;
+      };
     })();
+  </script>
+
+  <!-- Small UI scripts (no deps) -->
+  <script>
+    // Announcement close
+    document.querySelector("[data-ann-close]")?.addEventListener("click", (e) => {
+      document.querySelector(".announcement")?.remove();
+    });
+
+    // Back to top
+    document.querySelector("[data-top]")?.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    // Modal open/close
+    document.querySelectorAll("[data-open-modal]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-open-modal");
+        const m = document.getElementById(id);
+        if (m) m.hidden = false;
+      });
+    });
+    document.querySelectorAll("[data-close-modal]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const m = btn.closest(".modal");
+        if (m) m.hidden = true;
+      });
+    });
+
+    // Simple cookie banner (optional)
+    (function(){
+      const KEY = "extorei_cookie_ok";
+      const el = document.querySelector(".cookie");
+      if (!el) return;
+
+      const saved = localStorage.getItem(KEY);
+      if (!saved) el.hidden = false;
+
+      el.querySelector("[data-cookie-accept]")?.addEventListener("click", () => {
+        localStorage.setItem(KEY, "yes");
+        el.hidden = true;
+      });
+      el.querySelector("[data-cookie-reject]")?.addEventListener("click", () => {
+        localStorage.setItem(KEY, "no");
+        el.hidden = true;
+      });
+    })();
+
+    // Keyboard shortcuts
+    window.addEventListener("keydown", (e) => {
+      if (!e.altKey) return;
+      const k = (e.key || "").toLowerCase();
+      if (k === "d") location.hash = "#demo";
+      if (k === "a") location.hash = "#pricing";
+    });
   </script>
 
   <!-- A te JS-ed -->
