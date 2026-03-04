@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EXTOREI Demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <h1>Demo</h1>
+
+  <form id="demoForm">
+    <input type="text" placeholder="Név" required />
+    <input type="email" placeholder="Email" required />
+    <select required>
+      <option value="">Válassz típust</option>
+      <option value="salon">Salon</option>
+      <option value="gym">Gym</option>
+      <option value="agency">Agency</option>
+    </select>
+    <button type="submit">Küldés</button>
+  </form>
+
+  <script src="/index.js"></script>
+</body>
+</html>
