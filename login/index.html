@@ -1,80 +1,340 @@
 <!doctype html>
-<html lang="hu">
+<html lang="hu" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Belépés | EXTOREI</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-   <link rel="stylesheet" href="login.css" />
-</head>
-<body>
-  <div class="card">
-    <h2>Belépés / Regisztráció</h2>
-    <p class="muted">A demo használatához be kell jelentkezned. Regisztrációkor automatikusan indul a 14 nap próba.</p>
 
-    <div class="row">
-      <input id="email" type="email" placeholder="Email" autocomplete="email" required />
-      <input id="pass" type="password" placeholder="Jelszó" autocomplete="current-password" required />
-      <button id="loginBtn">Belépés</button>
-      <button id="signupBtn">Regisztráció (14 nap próba)</button>
-      <button id="logoutBtn" style="background:rgba(255,255,255,.08)">Kijelentkezés</button>
-      <pre id="out">Betöltés...</pre>
-    </div>
+  <!-- Fonts (ha már máshol behúzod, ezt kihagyhatod) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Syncopate (display) -->
+  <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="login/login.css" />
+</head>
+
+<body>
+  <!-- Background layers -->
+  <div class="bg" aria-hidden="true">
+    <canvas id="bg"></canvas>
+    <div class="aurora a1"></div>
+    <div class="aurora a2"></div>
+    <div class="aurora a3"></div>
+    <div class="noise"></div>
+    <div class="vignette"></div>
   </div>
 
-<script>
-(async () => {
-  const out = document.getElementById("out");
-  const emailEl = document.getElementById("email");
-  const passEl  = document.getElementById("pass");
+  <!-- Topbar -->
+  <header class="topbar">
+    <a class="brand" href="/">
+      <span class="brand-mark">E</span>
+      <span class="brand-text">EXTOREI <b>BeautySuite</b></span>
+    </a>
 
-  const cfgRes = await fetch("/api/config", { cache: "no-store" });
-  if (!cfgRes.ok) throw new Error("Config fetch failed: " + cfgRes.status);
-  const cfg = await cfgRes.json();
-  if (!cfg.url || !cfg.anon) throw new Error("Hiányzó env: NEXT_PUBLIC_SUPABASE_URL / ANON_KEY");
+    <div class="top-actions">
+      <button class="chip" id="systemBtn" type="button" title="Rendszer téma">System</button>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Téma váltás">
+        <span class="theme-toggle__icon" id="themeIcon">🌙</span>
+        <b id="themeLabel">Dark</b>
+      </button>
+    </div>
+  </header>
 
-  const supa = window.supabase.createClient(cfg.url, cfg.anon);
+  <!-- Layout -->
+  <main class="wrap">
+    <!-- Main Card -->
+    <section class="card" id="loginCard">
+      <div class="card-shine" id="cardShine" aria-hidden="true"></div>
 
-  async function showSession() {
-    const { data } = await supa.auth.getSession();
-    out.textContent = data.session
-      ? "Be vagy jelentkezve ✅\nUser: " + data.session.user.id
-      : "Nem vagy bejelentkezve.";
-  }
+      <div class="card-head">
+        <h1>Belépés / Regisztráció</h1>
+        <p>
+          A demo használatához be kell jelentkezned. Regisztrációkor automatikusan indul a
+          <b>14 nap próba</b>.
+        </p>
+      </div>
 
-  document.getElementById("loginBtn").addEventListener("click", async () => {
-    out.textContent = "Belépés...";
-    const email = emailEl.value.trim();
-    const password = passEl.value;
+      <div class="form">
+        <div class="field">
+          <span>Email</span>
+          <input id="email" type="email" placeholder="Email" autocomplete="email" required />
+        </div>
 
-    const { error } = await supa.auth.signInWithPassword({ email, password });
-    if (error) { out.textContent = "Hiba: " + error.message; return; }
+        <div class="field">
+          <span>Jelszó</span>
+          <div class="pw">
+            <input id="pass" type="password" placeholder="Jelszó" autocomplete="current-password" required />
+            <button class="pw-toggle" id="pwToggle" type="button" aria-label="Jelszó megjelenítése">👁️</button>
+          </div>
+        </div>
 
-    out.textContent = "OK ✅";
-    location.href = "/index.html";
-  });
+        <div class="row">
+          <label class="check">
+            <input id="remember" type="checkbox" checked />
+            Maradjak belépve
+          </label>
 
-  document.getElementById("signupBtn").addEventListener("click", async () => {
-    out.textContent = "Regisztráció...";
-    const email = emailEl.value.trim();
-    const password = passEl.value;
+          <a class="link" href="#" id="forgotLink">Elfelejtett jelszó?</a>
+        </div>
 
-    const { error } = await supa.auth.signUp({ email, password });
-    if (error) { out.textContent = "Hiba: " + error.message; return; }
+        <button class="btn btn-primary" id="loginBtn" type="button">
+          Belépés <span class="btn-arrow">→</span>
+        </button>
 
-    out.textContent =
-      "Regisztráció OK ✅\nHa email-confirm be van kapcsolva, nézd meg az emailedet és erősítsd meg.";
-  });
+        <div class="divider"><span>vagy</span></div>
 
-  document.getElementById("logoutBtn").addEventListener("click", async () => {
-    await supa.auth.signOut();
+        <button class="btn" id="signupBtn" type="button">
+          Regisztráció (14 nap próba)
+        </button>
+
+        <button class="btn btn-ghost" id="logoutBtn" type="button" style="margin-top:10px;">
+          Kijelentkezés
+        </button>
+
+        <pre id="out" style="margin-top:12px; white-space:pre-wrap; padding:12px; border-radius: var(--radius-md); border: var(--borderW) solid var(--border); background: color-mix(in srgb, var(--surface) 72%, transparent); color: var(--text);">
+Betöltés...
+        </pre>
+
+        <p class="bottom">
+          Tipp: ha email-confirm be van kapcsolva, a regisztráció után nézd meg a postaládát 📩
+        </p>
+      </div>
+    </section>
+
+    <!-- Side Card -->
+    <aside class="side">
+      <div class="side-card">
+        <h2>EXTOREI Demo</h2>
+        <p>
+          Gyors belépés, próbaverzió, és később itt jöhet: csomagválasztás, számlázás, CRM modulok.
+        </p>
+
+        <div class="mini-kpis" aria-label="Mini KPI kártyák">
+          <div class="kpi">
+            <span class="k">Próba</span>
+            <span class="v">14 nap</span>
+          </div>
+          <div class="kpi">
+            <span class="k">Modulok</span>
+            <span class="v">POS • CRM</span>
+          </div>
+          <div class="kpi">
+            <span class="k">Belépés</span>
+            <span class="v">Supabase</span>
+          </div>
+        </div>
+
+        <div class="pulse-pill" style="margin-top:16px;">
+          <span class="dot" aria-hidden="true"></span>
+          <span>Biztonságos auth • session kezelés</span>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+  (async () => {
+    const d = document;
+    const html = d.documentElement;
+
+    const out = d.getElementById("out");
+    const emailEl = d.getElementById("email");
+    const passEl  = d.getElementById("pass");
+
+    // ---------- Theme ----------
+    const THEME_KEY = "extorei_theme";
+    const themeToggle = d.getElementById("themeToggle");
+    const themeIcon = d.getElementById("themeIcon");
+    const themeLabel = d.getElementById("themeLabel");
+    const systemBtn = d.getElementById("systemBtn");
+
+    const prefersDark = () => window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const prefersReducedMotion = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function applyTheme(mode){
+      // mode: "light" | "dark" | "system"
+      if (mode === "system") {
+        html.dataset.theme = prefersDark() ? "dark" : "light";
+      } else {
+        html.dataset.theme = mode;
+      }
+
+      const current = html.dataset.theme;
+      themeIcon.textContent = current === "dark" ? "🌙" : "☀️";
+      themeLabel.textContent = current === "dark" ? "Dark" : "Light";
+      d.querySelector("#systemBtn").style.opacity = (localStorage.getItem(THEME_KEY) === "system") ? "1" : ".75";
+    }
+
+    function setTheme(mode){
+      localStorage.setItem(THEME_KEY, mode);
+      applyTheme(mode);
+    }
+
+    const savedTheme = localStorage.getItem(THEME_KEY) || "dark";
+    applyTheme(savedTheme);
+
+    themeToggle.addEventListener("click", () => {
+      const stored = localStorage.getItem(THEME_KEY) || "dark";
+      if (stored === "system") {
+        setTheme(prefersDark() ? "light" : "dark");
+        return;
+      }
+      setTheme(html.dataset.theme === "dark" ? "light" : "dark");
+    });
+
+    systemBtn.addEventListener("click", () => setTheme("system"));
+
+    if (window.matchMedia) {
+      const mq = window.matchMedia("(prefers-color-scheme: dark)");
+      mq.addEventListener?.("change", () => {
+        if ((localStorage.getItem(THEME_KEY) || "") === "system") applyTheme("system");
+      });
+    }
+
+    // Reduce motion flag
+    if (prefersReducedMotion()) html.classList.add("reduce-motion");
+
+    // ---------- Card shine (mouse tracking) ----------
+    const card = d.getElementById("loginCard");
+    const shine = d.getElementById("cardShine");
+
+    function setShineVars(e){
+      const r = card.getBoundingClientRect();
+      const mx = ((e.clientX - r.left) / r.width) * 100;
+      const my = ((e.clientY - r.top) / r.height) * 100;
+      shine.style.setProperty("--mx", mx.toFixed(2) + "%");
+      shine.style.setProperty("--my", my.toFixed(2) + "%");
+    }
+    card.addEventListener("pointermove", setShineVars);
+    card.addEventListener("pointerleave", () => {
+      shine.style.setProperty("--mx", "30%");
+      shine.style.setProperty("--my", "20%");
+    });
+
+    // ---------- Password toggle ----------
+    const pwToggle = d.getElementById("pwToggle");
+    pwToggle.addEventListener("click", () => {
+      const isPw = passEl.type === "password";
+      passEl.type = isPw ? "text" : "password";
+      pwToggle.textContent = isPw ? "🙈" : "👁️";
+    });
+
+    // ---------- Supabase init ----------
+    let supa;
+    try{
+      const cfgRes = await fetch("/api/config", { cache: "no-store" });
+      if (!cfgRes.ok) throw new Error("Config fetch failed: " + cfgRes.status);
+      const cfg = await cfgRes.json();
+      if (!cfg.url || !cfg.anon) throw new Error("Hiányzó env: NEXT_PUBLIC_SUPABASE_URL / ANON_KEY");
+
+      supa = window.supabase.createClient(cfg.url, cfg.anon);
+    } catch (err){
+      out.textContent = "Init hiba: " + err.message;
+      return;
+    }
+
+    async function showSession() {
+      const { data, error } = await supa.auth.getSession();
+      if (error) { out.textContent = "Session hiba: " + error.message; return; }
+
+      out.textContent = data.session
+        ? "Be vagy jelentkezve ✅\nUser: " + data.session.user.id + "\nEmail: " + (data.session.user.email || "-")
+        : "Nem vagy bejelentkezve.";
+    }
+
+    // ---------- Actions ----------
+    d.getElementById("loginBtn").addEventListener("click", async () => {
+      out.textContent = "Belépés...";
+      const email = emailEl.value.trim();
+      const password = passEl.value;
+
+      const { error } = await supa.auth.signInWithPassword({ email, password });
+      if (error) { out.textContent = "Hiba: " + error.message; return; }
+
+      out.textContent = "OK ✅";
+      location.href = "/index.html";
+    });
+
+    d.getElementById("signupBtn").addEventListener("click", async () => {
+      out.textContent = "Regisztráció...";
+      const email = emailEl.value.trim();
+      const password = passEl.value;
+
+      const { error } = await supa.auth.signUp({ email, password });
+      if (error) { out.textContent = "Hiba: " + error.message; return; }
+
+      out.textContent =
+        "Regisztráció OK ✅\nHa email-confirm be van kapcsolva, nézd meg az emailedet és erősítsd meg.";
+    });
+
+    d.getElementById("logoutBtn").addEventListener("click", async () => {
+      await supa.auth.signOut();
+      await showSession();
+    });
+
+    d.getElementById("forgotLink").addEventListener("click", async (e) => {
+      e.preventDefault();
+      const email = emailEl.value.trim();
+      if (!email) { out.textContent = "Add meg az emailed, és utána kattints erre."; return; }
+
+      out.textContent = "Jelszó visszaállítás küldése...";
+      const { error } = await supa.auth.resetPasswordForEmail(email, {
+        redirectTo: location.origin + "/reset.html"
+      });
+      if (error) { out.textContent = "Hiba: " + error.message; return; }
+      out.textContent = "Elküldve ✅\nNézd meg a leveleid (spam is).";
+    });
+
     await showSession();
-  });
 
-  await showSession();
-})().catch(err => {
-  document.getElementById("out").textContent = "Init hiba: " + err.message;
-});
-</script>
+    // ---------- Minimal canvas bg (optional) ----------
+    // csak egy nagyon enyhe "csillagpor" mozgás, nem üti a CSS aurorát
+    const canvas = d.getElementById("bg");
+    const ctx = canvas.getContext("2d");
+    const dots = Array.from({ length: 70 }, () => ({
+      x: Math.random(), y: Math.random(),
+      r: Math.random() * 1.4 + 0.3,
+      vx: (Math.random() - 0.5) * 0.04,
+      vy: (Math.random() - 0.5) * 0.04
+    }));
+
+    function resize(){
+      canvas.width = Math.floor(window.innerWidth * devicePixelRatio);
+      canvas.height = Math.floor(window.innerHeight * devicePixelRatio);
+      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    function tick(){
+      ctx.clearRect(0,0,window.innerWidth, window.innerHeight);
+
+      // halvány pontok
+      for (const p of dots){
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < -0.05) p.x = 1.05;
+        if (p.x > 1.05) p.x = -0.05;
+        if (p.y < -0.05) p.y = 1.05;
+        if (p.y > 1.05) p.y = -0.05;
+
+        const x = p.x * window.innerWidth;
+        const y = p.y * window.innerHeight;
+
+        ctx.beginPath();
+        ctx.arc(x, y, p.r, 0, Math.PI * 2);
+        ctx.globalAlpha = 0.28;
+        ctx.fillStyle = "#ffffff";
+        ctx.fill();
+      }
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(tick);
+    }
+    if (!prefersReducedMotion()) tick();
+  })();
+  </script>
 </body>
 </html>
