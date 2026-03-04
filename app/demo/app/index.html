@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="hu" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Demo | EXTOREI</title>
+  <meta name="description" content="EXTOREI demo belépő – válassz szolgáltatást és indítsd a demót." />
+  <meta name="theme-color" content="#ffffff" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="/demo/demo.css" />
+</head>
+
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">
+      <span class="mark">E</span>
+      <span class="text">EXTOREI <b>Demo</b></span>
+    </a>
+
+    <div class="actions">
+      <button class="btn btn-ghost" id="themeBtn" type="button" aria-label="Téma váltás">
+        <span id="themeIcon" class="icon">☀️</span>
+        <span id="themeLabel">Világos</span>
+      </button>
+      <button class="btn" id="logoutBtn" type="button">Kijelentkezés</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <div class="card-head">
+        <h1>Válassz szolgáltatást a demóhoz</h1>
+        <p class="muted">
+          A kiválasztott modulhoz azonnal hozzáférsz a <b>demo apphoz</b>. Ha a 14 nap próba lejárt,
+          automatikusan a fizetés oldalra irányítunk.
+        </p>
+      </div>
+
+      <div class="card-body">
+        <div class="status" id="statusBox">
+          <div class="dot" aria-hidden="true"></div>
+          <div>
+            <div class="status-title" id="statusTitle">Betöltés…</div>
+            <div class="status-sub" id="statusSub">Session és jogosultság ellenőrzése folyamatban.</div>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="panel">
+            <h2>Szolgáltatás</h2>
+            <p class="muted">Válassz egyet – ezt mentjük, és az appban is felhasználhatod.</p>
+
+            <div class="services" id="services"></div>
+
+            <div class="hint">
+              Tipp: linkből is jöhet előválasztás így: <code>?service=pos</code>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2>Indítás</h2>
+            <p class="muted">
+              A demó indításához aktív próbának vagy fizetésnek kell lennie. (Trial = 14 nap)
+            </p>
+
+            <div class="summary">
+              <div class="line">
+                <span>Kiválasztott:</span>
+                <b id="chosenLabel">–</b>
+              </div>
+              <div class="line">
+                <span>Állapot:</span>
+                <b id="entLabel">–</b>
+              </div>
+              <div class="line">
+                <span>Trial vége:</span>
+                <b id="trialLabel">–</b>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" id="startBtn" type="button">
+              Demo indítása →
+            </button>
+
+            <div class="small muted">
+              Ha lejárt: automatikus átirányítás a <b>/pay/index.html</b> oldalra.
+            </div>
+
+            <hr class="sep" />
+
+            <div class="links">
+              <a class="link" href="/pay/index.html">Ugrás fizetéshez</a>
+              <a class="link" href="/login.html">Vissza belépéshez</a>
+            </div>
+          </div>
+        </div>
+
+        <pre class="log" id="log">Log: –</pre>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span class="muted">© EXTOREI • Demo belépő</span>
+    </footer>
+  </main>
+
+  <script src="/demo/demo.js"></script>
+</body>
+</html>
