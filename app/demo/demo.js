@@ -46,7 +46,7 @@
       (data.subscription_status === "trial" && trialEnd > now);
 
     if (!active) {
-      location.href = "/paywall.html";
+      location.href = "./paywall.html";
       throw new Error("Trial expired");
     }
 
@@ -80,7 +80,7 @@
         if (error) {
           const msg = (error.message || "").toLowerCase();
           if (msg.includes("row-level security") || msg.includes("permission denied")) {
-            location.href = "/paywall.html";
+            location.href = "./paywall.html";
             return;
           }
           throw new Error(error.message);
