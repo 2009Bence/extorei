@@ -1,5 +1,10 @@
-() => {
+(() => {
   const html = document.documentElement;
+
+  // ===== Supabase =====
+  const supabaseUrl = "IDE_A_SUPABASE_URL";
+  const supabaseKey = "IDE_A_SUPABASE_ANON_KEY";
+  const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
   // ===== Theme =====
   const THEME_KEY = "extorei_theme";
@@ -8,6 +13,17 @@
 
   const pw = document.getElementById("pw");
   const pwToggle = document.getElementById("pwToggle");
+
+  // ===== Register form =====
+  const registerForm = document.getElementById("registerForm");
+  const emailInput = document.getElementById("email");
+  const msg = document.getElementById("msg");
+
+  function setMessage(text, isError = false) {
+    if (!msg) return;
+    msg.textContent = text;
+    msg.style.color = isError ? "#ff6b6b" : "#22c55e";
+  }
 
   function setTheme(theme) {
     html.setAttribute("data-theme", theme);
@@ -53,6 +69,54 @@
     pwToggle.textContent = isPw ? "🙈" : "👁";
   });
 
+  // ===== Register submit =====
+  registerForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = emailInput?.value.trim();
+    const password = pw?.value.trim();
+
+    if (!email || !password) {
+      setMessage("Add meg az email címet és a jelszót.", true);
+      return;
+    }
+
+    if (password.length < 6) {
+      setMessage("A jelszónak legalább 6 karakteresnek kell lennie.", true);
+      return;
+    }
+
+    setMessage("Regisztráció folyamatban...");
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password
+      });
+
+      console.log("SIGNUP DATA:", data);
+      console.log("SIGNUP ERROR:", error);
+
+      if (error) {
+        setMessage("Hiba: " + error.message, true);
+        return;
+      }
+
+      setMessage("Sikeres regisztráció! Most már be tudsz lépni.");
+
+      registerForm.reset();
+
+      // Ha akarod, itt át is dobhatod a login oldalra:
+      // setTimeout(() => {
+      //   window.location.href = "/login/";
+      // }, 1200);
+
+    } catch (err) {
+      console.error("Váratlan hiba:", err);
+      setMessage("Váratlan hiba történt: " + err.message, true);
+    }
+  });
+
   // ===== Card shine follows mouse + tilt =====
   const tiltCard = document.getElementById("tiltCard");
   const isTouch = matchMedia?.("(hover: none), (pointer: coarse)")?.matches;
@@ -82,15 +146,16 @@
 
   // ===== Canvas constellation + parallax =====
   const canvas = document.getElementById("bg");
-  const ctx = canvas.getContext("2d", { alpha: true });
+  const ctx = canvas?.getContext("2d", { alpha: true });
 
   let w = 0, h = 0;
-  const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1)); // cap
+  const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
   let points = [];
   let mouse = { x: 0.5, y: 0.5 };
   let par = { x: 0, y: 0 };
 
   function resize() {
+    if (!canvas || !ctx) return;
     w = window.innerWidth;
     h = window.innerHeight;
     canvas.width = Math.floor(w * dpr);
@@ -103,7 +168,6 @@
   const rand = (min, max) => Math.random() * (max - min) + min;
 
   function countForScreen() {
-    // mobilon kevesebb, desktopon több
     const base = Math.min(110, Math.floor((w * h) / 18000));
     return Math.max(48, base);
   }
@@ -136,19 +200,19 @@
   }
 
   function step() {
+    if (!canvas || !ctx) return;
+
     const { tint, dot, line } = themeColors();
 
     ctx.clearRect(0, 0, w, h);
     ctx.fillStyle = tint;
     ctx.fillRect(0, 0, w, h);
 
-    // parallax (smooth)
     par.x += (mouse.x - par.x) * 0.05;
     par.y += (mouse.y - par.y) * 0.05;
     const px = (par.x - 0.5) * 22;
     const py = (par.y - 0.5) * 22;
 
-    // move
     for (const p of points) {
       p.x += p.vx;
       p.y += p.vy;
@@ -159,12 +223,11 @@
       if (p.y > h + 30) p.y = -30;
     }
 
-    // lines
     for (let i = 0; i < points.length; i++) {
       for (let j = i + 1; j < points.length; j++) {
         const a = points[i], b = points[j];
-        const dx = (a.x - b.x);
-        const dy = (a.y - b.y);
+        const dx = a.x - b.x;
+        const dy = a.y - b.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         const max = reduced ? 110 : 150;
@@ -181,7 +244,6 @@
     }
     ctx.globalAlpha = 1;
 
-    // dots
     ctx.fillStyle = dot;
     for (const p of points) {
       ctx.beginPath();
@@ -197,12 +259,14 @@
     mouse.y = e.clientY / window.innerHeight;
   });
 
-  resize();
-  seed();
-  step();
-
-  window.addEventListener("resize", () => {
+  if (canvas && ctx) {
     resize();
     seed();
-  });
+    step();
+
+    window.addEventListener("resize", () => {
+      resize();
+      seed();
+    });
+  }
 })();
