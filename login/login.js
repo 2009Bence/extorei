@@ -5,8 +5,31 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const form = document.getElementById("loginForm");
 const msg = document.getElementById("msg");
+const btn = document.getElementById("loginBtn");
+const togglePassword = document.getElementById("togglePassword");
+const passwordInput = document.getElementById("password");
 
-async function markExpiredIfNeeded(subscription) {
+function setStatus(text, type = "") {
+  msg.textContent = text;
+  msg.className = `status ${type}`.trim();
+}
+
+togglePassword?.addEventListener("click", () => {
+  passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+});
+
+async function getOwnSubscription(userId) {
+  const { data, error } = await supabase
+    .from("subscriptions")
+    .select("*")
+    .eq("user_id", userId)
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+async function expireIfNeeded(subscription) {
   if (!subscription?.trial_ends_at) return subscription;
 
   const now = new Date();
@@ -15,10 +38,7 @@ async function markExpiredIfNeeded(subscription) {
   if (subscription.status === "active" && end < now) {
     await supabase
       .from("subscriptions")
-      .update({
-        status: "expired",
-        updated_at: new Date().toISOString()
-      })
+      .update({ status: "expired" })
       .eq("user_id", subscription.user_id);
 
     return { ...subscription, status: "expired" };
@@ -27,60 +47,72 @@ async function markExpiredIfNeeded(subscription) {
   return subscription;
 }
 
+function hasAccess(subscription) {
+  if (!subscription) return false;
+
+  const now = new Date();
+
+  const isPaid =
+    subscription.access_type === "paid" &&
+    subscription.status === "active";
+
+  const isTrialActive =
+    subscription.access_type === "trial" &&
+    subscription.status === "active" &&
+    subscription.trial_ends_at &&
+    new Date(subscription.trial_ends_at) >= now;
+
+  return isPaid || isTrialActive;
+}
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const email = document.getElementById("email").value.trim().toLowerCase();
-  const password = document.getElementById("password").value;
+  const password = passwordInput.value;
 
-  msg.textContent = "Belépés...";
+  if (!email || !password) {
+    setStatus("Add meg az email címet és a jelszót.", "error");
+    return;
+  }
 
-  const { error } = await supabase.auth.signInWithPassword({
+  btn.disabled = true;
+  setStatus("Belépés folyamatban...");
+
+  const { error: signInError } = await supabase.auth.signInWithPassword({
     email,
     password
   });
 
-  if (error) {
-    msg.textContent = "Hibás belépési adatok vagy a fiók nem használható ezzel a móddal.";
+  if (signInError) {
+    setStatus("Hibás email vagy jelszó, vagy a fiók nincs megerősítve.", "error");
+    btn.disabled = false;
     return;
   }
 
   const { data: userData, error: userError } = await supabase.auth.getUser();
 
   if (userError || !userData?.user) {
-    msg.textContent = "A felhasználó ellenőrzése sikertelen.";
+    setStatus("Nem sikerült ellenőrizni a felhasználót.", "error");
+    btn.disabled = false;
     return;
   }
 
-  const user = userData.user;
+  try {
+    let subscription = await getOwnSubscription(userData.user.id);
+    subscription = await expireIfNeeded(subscription);
 
-  const { data: subscription, error: subError } = await supabase
-    .from("subscriptions")
-    .select("*")
-    .eq("user_id", user.id)
-    .single();
+    if (hasAccess(subscription)) {
+      setStatus("Sikeres belépés. Átirányítás...", "success");
+      window.location.href = "/app/demo/app/index.html";
+      return;
+    }
 
-  if (subError || !subscription) {
-    msg.textContent = "Nem található hozzáférési rekord.";
-    return;
+    setStatus("A demo hozzáférés lejárt. Átirányítás fizetésre...", "error");
+    window.location.href = "/pay/index.html";
+  } catch (err) {
+    console.error(err);
+    setStatus("Nem található hozzáférési rekord ehhez a fiókhoz.", "error");
+    btn.disabled = false;
   }
-
-  const fixed = await markExpiredIfNeeded(subscription);
-
-  if (fixed.access_type === "paid" && fixed.status === "active") {
-    window.location.href = "/app/demo/app/index.html";
-    return;
-  }
-
-  if (
-    fixed.access_type === "trial" &&
-    fixed.status === "active" &&
-    fixed.trial_ends_at &&
-    new Date(fixed.trial_ends_at) >= new Date()
-  ) {
-    window.location.href = "/app/demo/app/index.html";
-    return;
-  }
-
-  window.location.href = "/pay/index.html";
 });
