@@ -1,114 +1,105 @@
 <!doctype html>
-<html lang="hu" data-theme="light">
+<html lang="hu">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Demo | EXTOREI</title>
-  <meta name="description" content="EXTOREI demo belépő – válassz szolgáltatást és indítsd a demót." />
-  <meta name="theme-color" content="#ffffff" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="/css/demo.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EXTOREI Demo App</title>
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./app.css" />
 </head>
-
 <body>
-  <header class="topbar">
-    <a class="brand" href="/">
-      <span class="mark">E</span>
-      <span class="text">EXTOREI <b>Demo</b></span>
-    </a>
-
-    <div class="actions">
-      <button class="btn btn-ghost" id="themeBtn" type="button" aria-label="Téma váltás">
-        <span id="themeIcon" class="icon">☀️</span>
-        <span id="themeLabel">Világos</span>
-      </button>
-      <button class="btn" id="logoutBtn" type="button">Kijelentkezés</button>
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <h2>Hozzáférés ellenőrzése...</h2>
+      <p>Kérlek várj, a rendszer validálja a demo jogosultságot.</p>
     </div>
-  </header>
+  </div>
 
-  <main class="wrap">
-    <section class="card">
-      <div class="card-head">
-        <h1>Válassz szolgáltatást a demóhoz</h1>
-        <p class="muted">
-          A kiválasztott modulhoz azonnal hozzáférsz a <b>demo apphoz</b>. Ha a 14 nap próba lejárt,
-          automatikusan a fizetés oldalra irányítunk.
-        </p>
+  <div id="appShell" hidden>
+    <aside class="sidebar">
+      <div class="sidebar__brand">
+        <div class="logo">E</div>
+        <div>
+          <strong>EXTOREI</strong>
+          <span>Demo workspace</span>
+        </div>
       </div>
 
-      <div class="card-body">
-        <div class="status" id="statusBox">
-          <div class="dot" aria-hidden="true"></div>
-          <div>
-            <div class="status-title" id="statusTitle">Betöltés…</div>
-            <div class="status-sub" id="statusSub">Session és jogosultság ellenőrzése folyamatban.</div>
-          </div>
+      <nav class="nav">
+        <a class="nav__item active" href="#">Dashboard</a>
+        <a class="nav__item" href="#">Naptár</a>
+        <a class="nav__item" href="#">Ügyfelek</a>
+        <a class="nav__item" href="#">Szolgáltatások</a>
+        <a class="nav__item" href="#">Riportok</a>
+      </nav>
+
+      <button id="logoutBtn" class="logout-btn">Kijelentkezés</button>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h1>Demo áttekintés</h1>
+          <p>Itt már csak aktív trial vagy fizetett hozzáféréssel lehet bent maradni.</p>
         </div>
+        <div class="topbar__pill" id="accessBadge">Aktív hozzáférés</div>
+      </header>
 
-        <div class="grid">
-          <div class="panel">
-            <h2>Szolgáltatás</h2>
-            <p class="muted">Válassz egyet – ezt mentjük, és az appban is felhasználhatod.</p>
+      <section class="grid">
+        <article class="card hero">
+          <span class="hero__tag">Protected route</span>
+          <h2>Üdv az EXTOREI demo appban</h2>
+          <p>
+            Ez a felület csak akkor jelenik meg, ha a felhasználó aktív trial vagy paid
+            állapotban van. Lejárt demo esetén automatikus átirányítás történik.
+          </p>
+        </article>
 
-            <div class="services" id="services"></div>
+        <article class="card stat">
+          <strong>48</strong>
+          <span>Mai foglalás</span>
+        </article>
 
-            <div class="hint">
-              Tipp: linkből is jöhet előválasztás így: <code>?service=pos</code>
-            </div>
+        <article class="card stat">
+          <strong>312</strong>
+          <span>Ügyfél rekord</span>
+        </article>
+
+        <article class="card stat">
+          <strong>11</strong>
+          <span>Aktív szolgáltatás</span>
+        </article>
+
+        <article class="card wide">
+          <h3>Naptár aktivitás</h3>
+          <div class="bars">
+            <span style="height:42%"></span>
+            <span style="height:68%"></span>
+            <span style="height:56%"></span>
+            <span style="height:84%"></span>
+            <span style="height:74%"></span>
+            <span style="height:92%"></span>
+            <span style="height:63%"></span>
           </div>
+        </article>
 
-          <div class="panel">
-            <h2>Indítás</h2>
-            <p class="muted">
-              A demó indításához aktív próbának vagy fizetésnek kell lennie. (Trial = 14 nap)
-            </p>
+        <article class="card wide">
+          <h3>Rendszer státusz</h3>
+          <ul class="list">
+            <li><span>Belépési ellenőrzés</span><strong>Aktív</strong></li>
+            <li><span>Trial validáció</span><strong>Aktív</strong></li>
+            <li><span>Lejárat-kezelés</span><strong>Automatikus</strong></li>
+            <li><span>Route guard</span><strong>Bekapcsolva</strong></li>
+          </ul>
+        </article>
+      </section>
+    </main>
+  </div>
 
-            <div class="summary">
-              <div class="line">
-                <span>Kiválasztott:</span>
-                <b id="chosenLabel">–</b>
-              </div>
-              <div class="line">
-                <span>Állapot:</span>
-                <b id="entLabel">–</b>
-              </div>
-              <div class="line">
-                <span>Trial vége:</span>
-                <b id="trialLabel">–</b>
-              </div>
-            </div>
-
-            <button class="btn btn-primary" id="startBtn" type="button">
-              Demo indítása →
-            </button>
-
-            <div class="small muted">
-              Ha lejárt: automatikus átirányítás a <b>/pay/index.html</b> oldalra.
-            </div>
-
-            <hr class="sep" />
-
-            <div class="links">
-              <a class="link" href="/pay/index.html">Ugrás fizetéshez</a>
-              <a class="link" href="/login.html">Vissza belépéshez</a>
-            </div>
-          </div>
-        </div>
-
-        <pre class="log" id="log">Log: –</pre>
-      </div>
-    </section>
-
-    <footer class="footer">
-      <span class="muted">© EXTOREI • Demo belépő</span>
-    </footer>
-  </main>
-
-  <script src="/app/demo/app/demo.js"></script>
+  <script type="module" src="./guard.js"></script>
 </body>
 </html>
