@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="hu" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Regisztráció | EXTOREI</title>
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./register.css" />
+</head>
+<body>
+  <div class="auth-shell">
+    <div class="auth-bg"></div>
+
+    <section class="auth-left">
+      <div class="brand">
+        <div class="brand__logo">E</div>
+        <div>
+          <div class="brand__name">EXTOREI</div>
+          <div class="brand__sub">BeautySuite platform</div>
+        </div>
+      </div>
+
+      <div class="hero">
+        <span class="badge">14 napos demo hozzáférés</span>
+        <h1>Indítsd el a saját szépségszalon rendszeredet profi környezetben.</h1>
+        <p>
+          Regisztráció után automatikusan kapsz hozzáférést a demo apphoz.
+          A trial egyszer indul el, 14 napig érvényes.
+        </p>
+
+        <div class="features">
+          <div class="feature-card">
+            <strong>Online foglalás</strong>
+            <span>Modern ügyfélélmény valós rendszerhangulattal</span>
+          </div>
+          <div class="feature-card">
+            <strong>Naptár & ügyfélkezelés</strong>
+            <span>Gyors, letisztult, valódi SaaS felület</span>
+          </div>
+          <div class="feature-card">
+            <strong>Automatikus hozzáférés-kezelés</strong>
+            <span>Lejárat után fizetési oldalra irányítás</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="auth-right">
+      <div class="card">
+        <div class="card__top">
+          <h2>Fiók létrehozása</h2>
+          <p>Hozz létre fiókot és kezdd el a 14 napos demót.</p>
+        </div>
+
+        <form id="registerForm" novalidate>
+          <label class="field">
+            <span>Teljes név</span>
+            <input type="text" id="fullName" placeholder="Pl. Viasz-Kádi Bence" />
+          </label>
+
+          <label class="field">
+            <span>Email cím</span>
+            <input type="email" id="email" placeholder="pelda@email.com" required />
+          </label>
+
+          <label class="field">
+            <span>Jelszó</span>
+            <div class="password-wrap">
+              <input type="password" id="password" placeholder="Minimum 6 karakter" minlength="6" required />
+              <button type="button" id="togglePassword" class="ghost-btn" aria-label="Jelszó megjelenítése">👁</button>
+            </div>
+          </label>
+
+          <button type="submit" class="primary-btn" id="registerBtn">
+            <span>Regisztráció</span>
+          </button>
+
+          <div class="status" id="msg" aria-live="polite"></div>
+        </form>
+
+        <div class="divider"><span>vagy</span></div>
+
+        <a class="secondary-link" href="/login/index.html">Már van fiókom, belépek</a>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="./register.js"></script>
+</body>
+</html>
