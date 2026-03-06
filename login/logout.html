@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Kijelentkezés | EXTOREI</title>
+
+<style>
+body{
+  font-family: system-ui;
+  background:#070914;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+}
+
+.card{
+  background:rgba(255,255,255,.06);
+  border-radius:16px;
+  padding:40px;
+  text-align:center;
+}
+
+.loader{
+  margin-top:20px;
+  opacity:.7;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+<h2>Kijelentkezés...</h2>
+<p>Kérlek várj egy pillanatot.</p>
+<div class="loader">🔄</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="logout.js"></script>
+
+</body>
+</html>
