@@ -1,10 +1,28 @@
-(() => {
+(async () => {
   const html = document.documentElement;
 
-  // ===== Supabase =====
-  const supabaseUrl = "IDE_A_SUPABASE_URL";
-  const supabaseKey = "IDE_A_SUPABASE_ANON_KEY";
-  const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+  // ===== Supabase config betöltése az API-ból =====
+  let supabase;
+
+  try {
+    const res = await fetch("/api/config");
+    const config = await res.json();
+
+    if (!config.url || !config.anon) {
+      throw new Error("Hiányzik a Supabase URL vagy ANON kulcs az /api/config válaszból.");
+    }
+
+    supabase = window.supabase.createClient(config.url, config.anon);
+    console.log("Supabase config betöltve:", config.url);
+  } catch (err) {
+    console.error("Config betöltési hiba:", err);
+    const msg = document.getElementById("msg");
+    if (msg) {
+      msg.textContent = "Hiba az API config betöltésekor: " + err.message;
+      msg.style.color = "#ff6b6b";
+    }
+    return;
+  }
 
   // ===== Theme =====
   const THEME_KEY = "extorei_theme";
@@ -103,14 +121,7 @@
       }
 
       setMessage("Sikeres regisztráció! Most már be tudsz lépni.");
-
       registerForm.reset();
-
-      // Ha akarod, itt át is dobhatod a login oldalra:
-      // setTimeout(() => {
-      //   window.location.href = "/login/";
-      // }, 1200);
-
     } catch (err) {
       console.error("Váratlan hiba:", err);
       setMessage("Váratlan hiba történt: " + err.message, true);
