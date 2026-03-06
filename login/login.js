@@ -83,7 +83,7 @@ form.addEventListener("submit", async (e) => {
     email,
     password
   });
-
+const isExpired = new Date(subscription.trial_ends_at) < new Date();
   if (signInError) {
     setStatus("Hibás email vagy jelszó, vagy a fiók nincs megerősítve.", "error");
     btn.disabled = false;
