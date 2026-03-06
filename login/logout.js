@@ -1,26 +1,9 @@
-(async () => {
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+import { supabaseUrl, supabaseAnonKey } from "../api/config.js";
 
-  try {
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-    const r = await fetch("/api/config", { cache: "no-store" });
-    const cfg = await r.json();
-
-    const supabaseClient = supabase.createClient(cfg.url, cfg.anon);
-
-    const { error } = await supabaseClient.auth.signOut();
-
-    if (error) {
-      console.error("Logout hiba:", error.message);
-    }
-
-    // vissza a főoldalra
-    window.location.href = "/";
-
-  } catch (err) {
-
-    console.error("Logout exception:", err);
-
-    window.location.href = "/";
-  }
-
-})();
+document.getElementById("logoutBtn")?.addEventListener("click", async () => {
+  await supabase.auth.signOut();
+  window.location.href = "/login/index.html";
+});
