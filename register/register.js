@@ -1,79 +1,35 @@
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-import { supabaseUrl, supabaseAnonKey } from "../api/config.js";
+const { data, error } = await supabase.auth.signUp({
+  email,
+  password,
+  options: {
+    data: { full_name: fullName }
+  }
+});
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-const form = document.getElementById("registerForm");
-const msg = document.getElementById("msg");
-const btn = document.getElementById("registerBtn");
-const togglePassword = document.getElementById("togglePassword");
-const passwordInput = document.getElementById("password");
-
-function setStatus(text, type = "") {
-  msg.textContent = text;
-  msg.className = `status ${type}`.trim();
+if (error) {
+  console.error(error);
+  return;
 }
 
-togglePassword?.addEventListener("click", () => {
-  passwordInput.type = passwordInput.type === "password" ? "text" : "password";
-});
+const user = data?.user;
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const fullName = document.getElementById("fullName").value.trim();
-  const email = document.getElementById("email").value.trim().toLowerCase();
-  const password = passwordInput.value;
-
-  if (!email || !password) {
-    setStatus("Add meg az email címet és a jelszót.", "error");
-    return;
-  }
-
-  if (password.length < 6) {
-    setStatus("A jelszónak legalább 6 karakter hosszúnak kell lennie.", "error");
-    return;
-  }
-
-  btn.disabled = true;
-  setStatus("Fiók létrehozása folyamatban...");
-
-  const { data, error } = await supabase.auth.signUp({
+if (user) {
+  const { error: pErr } = await supabase.from("profiles").insert({
+    id: user.id,
     email,
-    password,
-    options: {
-      emailRedirectTo: `${window.location.origin}/login/index.html`,
-      data: {
-        full_name: fullName
-      }
-    }
+    full_name: fullName || null
   });
 
-  if (error) {
-    setStatus(error.message, "error");
-    btn.disabled = false;
-    return;
-  }
+  console.log("profiles insert hiba:", pErr);
 
-  const user = data?.user;
+  const { error: sErr } = await supabase.from("subscriptions").insert({
+    user_id: user.id,
+    access_type: "trial",
+    status: "active",
+    trial_started_at: new Date().toISOString(),
+    trial_ends_at: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+    trial_used: true
+  });
 
-  if (user) {
-    const { error: updateProfileError } = await supabase
-      .from("profiles")
-      .update({ full_name: fullName || null })
-      .eq("id", user.id);
-
-    if (updateProfileError) {
-      console.warn("Profil név mentési hiba:", updateProfileError.message);
-    }
-  }
-
-  setStatus(
-    "Sikeres regisztráció. Ha kötelező az email megerősítés, nézd meg a postaládádat, majd jelentkezz be.",
-    "success"
-  );
-
-  setTimeout(() => {
-    window.location.href = "/login/index.html";
-  }, 1800);
-});
+  console.log("subscriptions insert hiba:", sErr);
+}
