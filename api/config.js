@@ -1,8 +1,2 @@
-export default function handler(req, res) {
-  res.setHeader("Content-Type", "application/json");
-  res.setHeader("Cache-Control", "public, max-age=60");
-  res.status(200).json({
-    url: process.env.NEXT_PUBLIC_SUPABASE_URL,
-    anon: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  });
-}
+export const supabaseUrl = "sb_publishable_ARj6K36ENV8g9LOtZrWwXw_tBK00b9g";
+export const supabaseUrl = "https://kskvssesdnnivawsfjfm.supabase.co";
