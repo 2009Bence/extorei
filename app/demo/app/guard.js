@@ -3,62 +3,103 @@ import { supabaseUrl, supabaseAnonKey } from "../../../api/config.js";
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-const loading = document.getElementById("loading");
-const app = document.getElementById("app");
+const loadingScreen = document.getElementById("loadingScreen");
+const appShell = document.getElementById("appShell");
+const accessBadge = document.getElementById("accessBadge");
+const logoutBtn = document.getElementById("logoutBtn");
 
-async function guard() {
-  const { data: userData, error: userError } = await supabase.auth.getUser();
+function showApp(text = "Aktív hozzáférés") {
+  if (accessBadge) accessBadge.textContent = text;
+  loadingScreen.hidden = true;
+  appShell.hidden = false;
+}
 
-  if (userError || !userData?.user) {
-    window.location.href = "/login/index.html";
-    return;
-  }
+async function redirectToLogin() {
+  window.location.href = "/login/index.html";
+}
 
-  const user = userData.user;
+async function redirectToPay() {
+  window.location.href = "/pay/index.html";
+}
 
-  const { data: subscription, error: subError } = await supabase
+async function getSubscription(userId) {
+  const { data, error } = await supabase
     .from("subscriptions")
     .select("*")
-    .eq("user_id", user.id)
+    .eq("user_id", userId)
     .single();
 
-  if (subError || !subscription) {
-    window.location.href = "/login/index.html";
-    return;
-  }
+  if (error) throw error;
+  return data;
+}
+
+async function expireIfNeeded(subscription) {
+  if (!subscription?.trial_ends_at) return subscription;
 
   const now = new Date();
-  const trialEnd = subscription.trial_ends_at ? new Date(subscription.trial_ends_at) : null;
+  const end = new Date(subscription.trial_ends_at);
 
-  const isPaid = subscription.access_type === "paid" && subscription.status === "active";
+  if (subscription.status === "active" && end < now) {
+    await supabase
+      .from("subscriptions")
+      .update({ status: "expired" })
+      .eq("user_id", subscription.user_id);
+
+    return { ...subscription, status: "expired" };
+  }
+
+  return subscription;
+}
+
+function resolveAccess(subscription) {
+  const now = new Date();
+
+  const isPaid =
+    subscription.access_type === "paid" &&
+    subscription.status === "active";
+
   const isTrialActive =
     subscription.access_type === "trial" &&
     subscription.status === "active" &&
-    trialEnd &&
-    trialEnd >= now;
+    subscription.trial_ends_at &&
+    new Date(subscription.trial_ends_at) >= now;
 
-  if (!isPaid && !isTrialActive) {
-    if (subscription.status === "active" && trialEnd && trialEnd < now) {
-      await supabase
-        .from("subscriptions")
-        .update({
-          status: "expired",
-          updated_at: new Date().toISOString()
-        })
-        .eq("user_id", user.id);
-    }
+  return {
+    isPaid,
+    isTrialActive,
+    hasAccess: isPaid || isTrialActive
+  };
+}
 
-    window.location.href = "/pay/index.html";
+async function guardRoute() {
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+
+  if (userError || !userData?.user) {
+    await redirectToLogin();
     return;
   }
 
-  loading.hidden = true;
-  app.hidden = false;
+  try {
+    let subscription = await getSubscription(userData.user.id);
+    subscription = await expireIfNeeded(subscription);
+
+    const access = resolveAccess(subscription);
+
+    if (!access.hasAccess) {
+      await redirectToPay();
+      return;
+    }
+
+    showApp(access.isPaid ? "Fizetett hozzáférés" : "Aktív trial");
+  } catch (error) {
+    console.error("Guard hiba:", error);
+    await redirectToLogin();
+  }
 }
 
-guard();
-
-document.getElementById("logoutBtn")?.addEventListener("click", async () => {
+logoutBtn?.addEventListener("click", async () => {
   await supabase.auth.signOut();
   window.location.href = "/login/index.html";
 });
+
+guardRoute();
