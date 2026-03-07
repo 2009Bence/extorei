@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<title>Supabase Signup teszt</title>
+</head>
+
+<body>
+
+<h2>Supabase Signup Teszt</h2>
+
+<button id="signupBtn">Signup teszt</button>
+
+<pre id="out"></pre>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const out = document.getElementById("out");
+
+const supabaseUrl = "https://kskvssesdnnivawsfjfm.supabase.co";
+const supabaseKey = "sb_publishable_ARj6K36ENV8g9LOtZrWwXw_tBK00b9g";
+
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+document.getElementById("signupBtn").addEventListener("click", async () => {
+
+  out.textContent = "Signup teszt indul...\n";
+
+  try {
+
+    const { data, error } = await supabase.auth.signUp({
+      email: "teszt" + Date.now() + "@teszt.hu",
+      password: "Teszt123456!"
+    });
+
+    out.textContent += "\nDATA:\n" + JSON.stringify(data, null, 2);
+    out.textContent += "\n\nERROR:\n" + JSON.stringify(error, null, 2);
+
+  } catch (err) {
+
+    out.textContent += "\nHIBA:\n" + err.message;
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
