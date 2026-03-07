@@ -15,23 +15,65 @@
     const out = document.getElementById("out");
     const btn = document.getElementById("testBtn");
 
+    function log(text = "") {
+      out.textContent += text + "\n";
+    }
+
+    log("=== BETÖLTÉS ELLENŐRZÉS ===");
+    log("window.supabase típusa: " + typeof window.supabase);
+    log("window.supabase.createClient típusa: " + typeof window.supabase?.createClient);
+
     const supabaseUrl = "https://kskvssesdnnivawsfjfm.supabase.co";
     const supabaseKey = "sb_publishable_ARj6K36ENV8g9LOtZrWwXw_tBK00b9g";
 
-    const client = window.supabase.createClient(supabaseUrl, supabaseKey);
+    let client = null;
+
+    try {
+      if (!window.supabase || typeof window.supabase.createClient !== "function") {
+        throw new Error("A Supabase CDN könyvtár nem töltődött be rendesen.");
+      }
+
+      client = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+      log("client típusa: " + typeof client);
+      log("client.auth létezik: " + !!client?.auth);
+      log("client.auth.getSession típusa: " + typeof client?.auth?.getSession);
+      log("");
+    } catch (e) {
+      log("INDÍTÁSI HIBA: " + e.message);
+      console.error(e);
+    }
 
     btn.addEventListener("click", async () => {
       out.textContent = "";
-      out.textContent += "window.supabase: " + typeof window.supabase + "\n";
-      out.textContent += "client: " + typeof client + "\n";
-      out.textContent += "client.auth: " + !!client.auth + "\n\n";
+
+      log("=== TESZT ===");
+      log("window.supabase típusa: " + typeof window.supabase);
+      log("window.supabase.createClient típusa: " + typeof window.supabase?.createClient);
+      log("client típusa: " + typeof client);
+      log("client.auth létezik: " + !!client?.auth);
+      log("client.auth.getSession típusa: " + typeof client?.auth?.getSession);
+      log("");
 
       try {
+        if (!client) {
+          throw new Error("A client nem jött létre.");
+        }
+
+        if (!client.auth || typeof client.auth.getSession !== "function") {
+          throw new Error("A client.auth vagy a getSession hiányzik.");
+        }
+
         const { data, error } = await client.auth.getSession();
-        out.textContent += "DATA:\n" + JSON.stringify(data, null, 2) + "\n\n";
-        out.textContent += "ERROR:\n" + JSON.stringify(error, null, 2);
+
+        log("DATA:");
+        log(JSON.stringify(data, null, 2));
+        log("");
+        log("ERROR:");
+        log(JSON.stringify(error, null, 2));
       } catch (err) {
-        out.textContent += "HIBA:\n" + err.message;
+        log("HIBA:");
+        log(err.message);
         console.error(err);
       }
     });
