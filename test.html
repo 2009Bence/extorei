@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supabase teszt</title>
+</head>
+<body>
+  <h1>Supabase kapcsolat teszt</h1>
+  <button id="testBtn">Teszt indítása</button>
+  <pre id="out"></pre>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./api/config.js"></script>
+  <script>
+    const out = document.getElementById("out");
+    const btn = document.getElementById("testBtn");
+
+    btn.addEventListener("click", async () => {
+      out.textContent = "Teszt indul...\n";
+
+      try {
+        out.textContent += "Van supabase objektum: " + (!!window.supabase) + "\n";
+        out.textContent += "Van kliens: " + (!!supabase) + "\n";
+
+        const { data, error } = await supabase.auth.getSession();
+
+        out.textContent += "getSession lefutott\n";
+        out.textContent += "DATA:\n" + JSON.stringify(data, null, 2) + "\n";
+        out.textContent += "ERROR:\n" + JSON.stringify(error, null, 2) + "\n";
+      } catch (err) {
+        out.textContent += "VÁRATLAN HIBA:\n" + err.message;
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>
