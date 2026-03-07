@@ -1,6 +1,8 @@
-const supabaseUrl = "https://kskvssesdnnivawsfjfm.supabase.co";
-const supabaseKey = "b_publishable_ARj6K36ENV8g9LOtZrWwXw_tBK00b9g";
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+const SUPABASE_URL = "https://kskvssesdnnivawsfjfm.supabase.co";
+const SUPABASE_KEY = "sb_publishable_ARj6K36ENV8g9LOtZrWwXw_tBK00b9g";
 
-console.log("client:", supabase);
-console.log("auth:", supabase.auth);
+const { createClient } = window.supabase;
+window.sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+console.log("Supabase kliens létrehozva:", !!window.sb);
+console.log("window.sb.auth létezik:", !!window.sb?.auth);
