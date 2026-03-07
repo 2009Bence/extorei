@@ -15,8 +15,14 @@ if (error) {
 }
 
 const user = data?.user;
+const session = data?.session;
 
-console.log("user:", user);
+console.log("signUp user:", user);
+console.log("signUp session:", session);
+
+const { data: authUserData, error: authUserErr } = await supabase.auth.getUser();
+console.log("auth.getUser:", authUserData);
+console.log("auth.getUser error:", authUserErr);
 
 if (!user) {
   console.error("Nincs user a signUp után");
