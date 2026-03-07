@@ -1,3 +1,6 @@
+const now = new Date().toISOString();
+const trialEnd = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+
 const { data, error } = await supabase.auth.signUp({
   email,
   password,
@@ -6,52 +9,27 @@ const { data, error } = await supabase.auth.signUp({
   }
 });
 
-console.log("signUp data:", data);
-console.log("signUp error:", error);
-
 if (error) {
-  console.error("signUp hiba:", error);
+  console.error(error);
   return;
 }
 
 const user = data?.user;
-const session = data?.session;
+if (!user) return;
 
-console.log("signUp user:", user);
-console.log("signUp session:", session);
+await supabase.from("profiles").insert({
+  id: user.id,
+  email,
+  created_at: now
+});
 
-const { data: authUserData, error: authUserErr } = await supabase.auth.getUser();
-console.log("auth.getUser:", authUserData);
-console.log("auth.getUser error:", authUserErr);
-
-if (!user) {
-  console.error("Nincs user a signUp után");
-  return;
-}
-
-const { data: profileData, error: pErr } = await supabase
-  .from("profiles")
-  .insert({
-    id: user.id,
-    email,
-    full_name: fullName || null
-  })
-  .select();
-
-console.log("profiles data:", profileData);
-console.log("profiles insert hiba:", pErr);
-
-const { data: subData, error: sErr } = await supabase
-  .from("subscriptions")
-  .insert({
-    user_id: user.id,
-    access_type: "trial",
-    status: "active",
-    trial_started_at: new Date().toISOString(),
-    trial_ends_at: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
-    trial_used: true
-  })
-  .select();
-
-console.log("subscriptions data:", subData);
-console.log("subscriptions insert hiba:", sErr);
+await supabase.from("subscriptions").insert({
+  user_id: user.id,
+  access_type: "trial",
+  status: "active",
+  trial_started_at: now,
+  trial_ends_at: trialEnd,
+  trial_used: true,
+  created_at: now,
+  updated_at: now
+});
