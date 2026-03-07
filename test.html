@@ -12,27 +12,25 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./api/config.js"></script>
-  <script>
-    const out = document.getElementById("out");
-    const btn = document.getElementById("testBtn");
+<script>
+  const out = document.getElementById("out");
+  const btn = document.getElementById("testBtn");
 
-    btn.addEventListener("click", async () => {
-      out.textContent = "Teszt indul...\n";
+  btn.addEventListener("click", async () => {
+    out.textContent = "";
 
-      try {
-        out.textContent += "Van supabase objektum: " + (!!window.supabase) + "\n";
-        out.textContent += "Van kliens: " + (!!supabase) + "\n";
+    out.textContent += "window.supabase típusa: " + typeof window.supabase + "\n";
+    out.textContent += "supabase típusa: " + typeof supabase + "\n";
+    out.textContent += "supabase.auth: " + String(!!supabase?.auth) + "\n";
 
-        const { data, error } = await supabase.auth.getSession();
-
-        out.textContent += "getSession lefutott\n";
-        out.textContent += "DATA:\n" + JSON.stringify(data, null, 2) + "\n";
-        out.textContent += "ERROR:\n" + JSON.stringify(error, null, 2) + "\n";
-      } catch (err) {
-        out.textContent += "VÁRATLAN HIBA:\n" + err.message;
-        console.error(err);
-      }
-    });
-  </script>
+    try {
+      const { data, error } = await supabase.auth.getSession();
+      out.textContent += "DATA:\n" + JSON.stringify(data, null, 2) + "\n";
+      out.textContent += "ERROR:\n" + JSON.stringify(error, null, 2) + "\n";
+    } catch (err) {
+      out.textContent += "HIBA:\n" + err.message + "\n";
+    }
+  });
+</script>
 </body>
 </html>
