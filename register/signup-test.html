@@ -3,218 +3,287 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Supabase Signup Debug</title>
+  <title>Supabase teljes signup teszt</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
+      padding: 24px;
       line-height: 1.5;
+      background: #f5f5f5;
+      color: #111;
     }
-    input, button {
-      padding: 10px;
-      margin: 6px 0;
+
+    h1 {
+      margin-bottom: 24px;
+    }
+
+    .field {
+      margin-bottom: 14px;
+      max-width: 700px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    input {
       width: 100%;
-      max-width: 500px;
+      padding: 12px;
+      font-size: 16px;
       box-sizing: border-box;
     }
+
     button {
+      padding: 14px 18px;
+      font-size: 16px;
       cursor: pointer;
+      margin-top: 8px;
+      min-width: 240px;
     }
+
     pre {
-      background: #111;
-      color: #0f0;
-      padding: 14px;
+      margin-top: 22px;
+      background: #0b0b0b;
+      color: #21f321;
+      padding: 18px;
+      border-radius: 10px;
       white-space: pre-wrap;
       word-break: break-word;
-      border-radius: 8px;
-      margin-top: 16px;
-    }
-    .row {
-      margin-bottom: 10px;
+      font-size: 14px;
+      min-height: 260px;
     }
   </style>
 </head>
 <body>
-  <h1>Supabase Signup Debug</h1>
+  <h1>Supabase teljes signup teszt</h1>
 
-  <div class="row">
-    <label>Email</label>
-    <input id="email" type="email" value="" placeholder="pl. teszt123@teszt.hu" />
+  <div class="field">
+    <label for="fullName">Teljes név</label>
+    <input id="fullName" type="text" placeholder="pl. Viasz-Kádi Bence" value="Teszt Bence" />
   </div>
 
-  <div class="row">
-    <label>Jelszó</label>
-    <input id="password" type="text" value="Teszt123456!" placeholder="Jelszó" />
+  <div class="field">
+    <label for="email">Email</label>
+    <input id="email" type="email" placeholder="pl. teszt123@teszt.hu" />
   </div>
 
-  <button id="runTest">Signup debug futtatása</button>
-  <pre id="out">Készen áll.</pre>
+  <div class="field">
+    <label for="password">Jelszó</label>
+    <input id="password" type="text" value="Teszt123456!" />
+  </div>
+
+  <button id="runBtn">Teljes signup teszt futtatása</button>
+
+  <pre id="out"></pre>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const out = document.getElementById("out");
+    const runBtn = document.getElementById("runBtn");
+    const fullNameInput = document.getElementById("fullName");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
-    const runBtn = document.getElementById("runTest");
-
-    function log(...args) {
-      const line = args.map(v => {
-        if (typeof v === "string") return v;
-        try { return JSON.stringify(v, null, 2); }
-        catch { return String(v); }
-      }).join(" ");
-      out.textContent += line + "\n";
-      console.log(...args);
-    }
-
-    function hr(title = "") {
-      out.textContent += "\n==================== " + title + " ====================\n";
-    }
-
-    function randomEmail() {
-      return `teszt_${Date.now()}_${Math.floor(Math.random() * 100000)}@teszt.hu`;
-    }
 
     const SUPABASE_URL = "https://kskvssesdnnivawsfjfm.supabase.co";
     const SUPABASE_KEY = "sb_publishable_ARj6K36ENV8g9LOtZrWwXw_tBK00b9g";
 
-    let supabase = null;
-
-    function bootDiagnostics() {
-      hr("INDULÁSI DIAG");
-      log("location.href:", window.location.href);
-      log("window.supabase típusa:", typeof window.supabase);
-      log("window.supabase.createClient típusa:", typeof window.supabase?.createClient);
-      log("SUPABASE_URL:", SUPABASE_URL);
-      log("SUPABASE_KEY első 20 karakter:", SUPABASE_KEY.slice(0, 20) + "...");
-
-      try {
-        if (!window.supabase) {
-          throw new Error("A Supabase CDN nem töltődött be. A window.supabase hiányzik.");
+    function log(...parts) {
+      const line = parts.map(part => {
+        if (typeof part === "string") return part;
+        try {
+          return JSON.stringify(part, null, 2);
+        } catch {
+          return String(part);
         }
+      }).join(" ");
 
-        if (typeof window.supabase.createClient !== "function") {
-          throw new Error("A createClient nem érhető el. A CDN script hibásan töltődött be.");
-        }
-
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        log("supabase kliens típusa:", typeof supabase);
-        log("supabase.auth létezik:", !!supabase?.auth);
-        log("supabase.auth.signUp típusa:", typeof supabase?.auth?.signUp);
-        log("supabase.auth.getSession típusa:", typeof supabase?.auth?.getSession);
-      } catch (err) {
-        log("BOOT HIBA:", err.message);
-        log("BOOT STACK:", err.stack || "nincs stack");
-      }
+      out.textContent += line + "\n";
+      console.log(...parts);
     }
 
-    async function runFullDebug() {
+    function section(title) {
+      out.textContent += "\n==================== " + title + " ====================\n";
+    }
+
+    function makeRandomEmail() {
+      return `teszt_${Date.now()}_${Math.floor(Math.random() * 100000)}@teszt.hu`;
+    }
+
+    runBtn.addEventListener("click", async () => {
       out.textContent = "";
 
-      hr("KÖRNYEZET");
-      log("User agent:", navigator.userAgent);
-      log("Online állapot:", navigator.onLine);
-      log("URL:", window.location.href);
+      section("INDULÁS");
 
-      hr("SUPABASE BOOT");
-      bootDiagnostics();
-
-      if (!supabase) {
-        hr("LEÁLLÁS");
-        log("A teszt nem folytatható, mert a supabase kliens nem jött létre.");
-        return;
-      }
-
-      hr("SESSION TESZT");
-      try {
-        const sessionResult = await supabase.auth.getSession();
-        log("getSession teljes válasz:", sessionResult);
-        log("getSession.data:", sessionResult?.data);
-        log("getSession.error:", sessionResult?.error);
-      } catch (err) {
-        log("getSession TRY/CATCH HIBA:", err.message);
-        log("getSession STACK:", err.stack || "nincs stack");
-      }
-
-      hr("INPUT ELLENŐRZÉS");
+      const fullName = fullNameInput.value.trim();
       let email = emailInput.value.trim();
       const password = passwordInput.value;
 
       if (!email) {
-        email = randomEmail();
+        email = makeRandomEmail();
         emailInput.value = email;
-        log("Nem volt email megadva, generált email:", email);
+        log("Automatikusan generált email:", email);
       } else {
         log("Megadott email:", email);
       }
 
+      log("Teljes név:", fullName || "(üres)");
       log("Jelszó hossza:", password.length);
-      log("Email formailag érvényes-e:", /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
 
-      if (!password) {
-        log("HIBA: üres jelszó.");
+      const now = new Date().toISOString();
+      const trialEnd = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+
+      let supabase = null;
+
+      section("SUPABASE ELLENŐRZÉS");
+
+      try {
+        log("window.supabase típusa:", typeof window.supabase);
+        log("window.supabase.createClient típusa:", typeof window.supabase?.createClient);
+
+        if (!window.supabase) {
+          throw new Error("A Supabase CDN nem töltődött be.");
+        }
+
+        if (typeof window.supabase.createClient !== "function") {
+          throw new Error("A createClient nem érhető el.");
+        }
+
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        log("Supabase kliens létrejött:", !!supabase);
+        log("supabase.auth létezik:", !!supabase?.auth);
+        log("supabase.auth.signUp típusa:", typeof supabase?.auth?.signUp);
+        log("supabase.auth.getSession típusa:", typeof supabase?.auth?.getSession);
+      } catch (err) {
+        log("SUPABASE INDÍTÁSI HIBA:", err.message);
+        log("STACK:", err.stack || "nincs stack");
         return;
       }
 
-      hr("SIGNUP FUTTATÁS");
+      section("SESSION TESZT");
 
       try {
-        const startedAt = new Date().toISOString();
-        log("Signup indul:", startedAt);
-
-        const { data, error } = await supabase.auth.signUp({
-          email: email,
-          password: password
-        });
-
-        log("SIGNUP DATA:", data);
-        log("SIGNUP ERROR:", error);
-
-        hr("RÉSZLETES KIÉRTÉKELÉS");
-
-        if (error) {
-          log("❌ SUPABASE HIBAÜZENET:", error.message || "nincs message");
-          log("❌ error.name:", error.name || "nincs");
-          log("❌ error.status:", error.status || "nincs");
-          log("❌ error.code:", error.code || "nincs");
-          log("❌ teljes error objektum:", error);
-        } else {
-          log("✅ A signUp hívás technikailag lefutott.");
-
-          if (data?.user) {
-            log("✅ data.user.id:", data.user.id);
-            log("✅ data.user.email:", data.user.email);
-            log("✅ data.user.created_at:", data.user.created_at);
-          } else {
-            log("⚠ data.user nincs.");
-          }
-
-          if (data?.session) {
-            log("✅ session VAN");
-            log("session.user.id:", data.session.user?.id || "nincs");
-          } else {
-            log("⚠ session NINCS. Ez lehet normális email megerősítés esetén.");
-          }
-        }
+        const { data, error } = await supabase.auth.getSession();
+        log("SESSION DATA:", data);
+        log("SESSION ERROR:", error);
       } catch (err) {
-        hr("TRY/CATCH SZINTŰ HIBA");
-        log("💥 JS HIBA:", err.message);
-        log("💥 STACK:", err.stack || "nincs stack");
-
-        for (const key in err) {
-          try {
-            log(`err.${key}:`, err[key]);
-          } catch (_) {}
-        }
+        log("GETSESSION HIBA:", err.message);
+        log("STACK:", err.stack || "nincs stack");
+        return;
       }
 
-      hr("VÉGE");
-    }
+      section("AUTH SIGNUP");
 
-    runBtn.addEventListener("click", runFullDebug);
+      let user = null;
 
-    bootDiagnostics();
+      try {
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email: email,
+          password: password,
+          options: {
+            data: {
+              full_name: fullName
+            }
+          }
+        });
+
+        log("SIGNUP DATA:", signUpData);
+        log("SIGNUP ERROR:", signUpError);
+
+        if (signUpError) {
+          log("❌ AUTH SIGNUP HIBA:", signUpError.message);
+          log("Hiba objektum:", signUpError);
+          return;
+        }
+
+        user = signUpData?.user;
+
+        if (!user) {
+          log("❌ A signUp lefutott, de nincs user objektum.");
+          log("Lehetséges ok: email confirm beállítás vagy Auth oldali eltérés.");
+          return;
+        }
+
+        log("✅ AUTH USER ID:", user.id);
+        log("✅ AUTH USER EMAIL:", user.email);
+      } catch (err) {
+        log("❌ AUTH TRY/CATCH HIBA:", err.message);
+        log("STACK:", err.stack || "nincs stack");
+        return;
+      }
+
+      section("PROFILES INSERT");
+
+      try {
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .insert({
+            id: user.id,
+            email: email,
+            full_name: fullName,
+            created_at: now
+          })
+          .select();
+
+        log("PROFILE DATA:", profileData);
+        log("PROFILE ERROR:", profileError);
+
+        if (profileError) {
+          log("❌ PROFILES INSERT HIBA:", profileError.message);
+          log("Hiba objektum:", profileError);
+          log("Valószínű ok: RLS policy hiányzik vagy tiltja az insertet.");
+          return;
+        }
+
+        log("✅ PROFILE INSERT OK");
+      } catch (err) {
+        log("❌ PROFILE TRY/CATCH HIBA:", err.message);
+        log("STACK:", err.stack || "nincs stack");
+        return;
+      }
+
+      section("SUBSCRIPTIONS INSERT");
+
+      try {
+        const { data: subscriptionData, error: subscriptionError } = await supabase
+          .from("subscriptions")
+          .insert({
+            user_id: user.id,
+            access_type: "trial",
+            status: "active",
+            trial_started_at: now,
+            trial_ends_at: trialEnd,
+            trial_used: true,
+            created_at: now,
+            updated_at: now
+          })
+          .select();
+
+        log("SUBSCRIPTION DATA:", subscriptionData);
+        log("SUBSCRIPTION ERROR:", subscriptionError);
+
+        if (subscriptionError) {
+          log("❌ SUBSCRIPTIONS INSERT HIBA:", subscriptionError.message);
+          log("Hiba objektum:", subscriptionError);
+          log("Valószínű ok: RLS policy hiányzik vagy tiltja az insertet.");
+          return;
+        }
+
+        log("✅ SUBSCRIPTION INSERT OK");
+      } catch (err) {
+        log("❌ SUBSCRIPTION TRY/CATCH HIBA:", err.message);
+        log("STACK:", err.stack || "nincs stack");
+        return;
+      }
+
+      section("VÉGEREDMÉNY");
+      log("✅ MINDEN LÉPÉS SIKERES");
+      log("Auth user létrejött");
+      log("Profiles sor létrejött");
+      log("Subscriptions sor létrejött");
+    });
   </script>
 </body>
 </html>
