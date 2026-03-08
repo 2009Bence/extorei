@@ -3,18 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Supabase teljes signup teszt</title>
+  <title>Supabase signup trigger teszt</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 24px;
-      line-height: 1.5;
       background: #f5f5f5;
       color: #111;
-    }
-
-    h1 {
-      margin-bottom: 24px;
+      line-height: 1.5;
     }
 
     .field {
@@ -52,16 +48,16 @@
       white-space: pre-wrap;
       word-break: break-word;
       font-size: 14px;
-      min-height: 260px;
+      min-height: 220px;
     }
   </style>
 </head>
 <body>
-  <h1>Supabase teljes signup teszt</h1>
+  <h1>Supabase signup trigger teszt</h1>
 
   <div class="field">
     <label for="fullName">Teljes név</label>
-    <input id="fullName" type="text" placeholder="pl. Viasz-Kádi Bence" value="Teszt Bence" />
+    <input id="fullName" type="text" value="Teszt Bence" />
   </div>
 
   <div class="field">
@@ -74,7 +70,7 @@
     <input id="password" type="text" value="Teszt123456!" />
   </div>
 
-  <button id="runBtn">Teljes signup teszt futtatása</button>
+  <button id="runBtn">Signup trigger teszt futtatása</button>
 
   <pre id="out"></pre>
 
@@ -114,8 +110,6 @@
     runBtn.addEventListener("click", async () => {
       out.textContent = "";
 
-      section("INDULÁS");
-
       const fullName = fullNameInput.value.trim();
       let email = emailInput.value.trim();
       const password = passwordInput.value;
@@ -123,65 +117,34 @@
       if (!email) {
         email = makeRandomEmail();
         emailInput.value = email;
-        log("Automatikusan generált email:", email);
-      } else {
-        log("Megadott email:", email);
       }
 
-      log("Teljes név:", fullName || "(üres)");
+      section("INDULÁS");
+      log("Név:", fullName);
+      log("Email:", email);
       log("Jelszó hossza:", password.length);
 
-      const now = new Date().toISOString();
-      const trialEnd = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+      let supabase;
 
-      let supabase = null;
-
-      section("SUPABASE ELLENŐRZÉS");
-
+      section("SUPABASE");
       try {
         log("window.supabase típusa:", typeof window.supabase);
-        log("window.supabase.createClient típusa:", typeof window.supabase?.createClient);
-
-        if (!window.supabase) {
-          throw new Error("A Supabase CDN nem töltődött be.");
-        }
-
-        if (typeof window.supabase.createClient !== "function") {
-          throw new Error("A createClient nem érhető el.");
-        }
+        log("createClient típusa:", typeof window.supabase?.createClient);
 
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        log("Supabase kliens létrejött:", !!supabase);
-        log("supabase.auth létezik:", !!supabase?.auth);
-        log("supabase.auth.signUp típusa:", typeof supabase?.auth?.signUp);
-        log("supabase.auth.getSession típusa:", typeof supabase?.auth?.getSession);
+        log("Kliens létrejött:", !!supabase);
+        log("auth létezik:", !!supabase?.auth);
       } catch (err) {
-        log("SUPABASE INDÍTÁSI HIBA:", err.message);
-        log("STACK:", err.stack || "nincs stack");
+        log("SUPABASE HIBA:", err.message);
         return;
       }
 
-      section("SESSION TESZT");
-
+      section("SIGNUP");
       try {
-        const { data, error } = await supabase.auth.getSession();
-        log("SESSION DATA:", data);
-        log("SESSION ERROR:", error);
-      } catch (err) {
-        log("GETSESSION HIBA:", err.message);
-        log("STACK:", err.stack || "nincs stack");
-        return;
-      }
-
-      section("AUTH SIGNUP");
-
-      let user = null;
-
-      try {
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-          email: email,
-          password: password,
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
           options: {
             data: {
               full_name: fullName
@@ -189,100 +152,38 @@
           }
         });
 
-        log("SIGNUP DATA:", signUpData);
-        log("SIGNUP ERROR:", signUpError);
+        log("SIGNUP DATA:", data);
+        log("SIGNUP ERROR:", error);
 
-        if (signUpError) {
-          log("❌ AUTH SIGNUP HIBA:", signUpError.message);
-          log("Hiba objektum:", signUpError);
+        if (error) {
+          log("❌ Signup hiba:", error.message);
           return;
         }
 
-        user = signUpData?.user;
+        log("✅ Signup kérés sikeresen lefutott.");
 
-        if (!user) {
-          log("❌ A signUp lefutott, de nincs user objektum.");
-          log("Lehetséges ok: email confirm beállítás vagy Auth oldali eltérés.");
-          return;
+        if (data?.user) {
+          log("user.id:", data.user.id);
+          log("user.email:", data.user.email);
+        } else {
+          log("⚠ Nincs user objektum.");
         }
 
-        log("✅ AUTH USER ID:", user.id);
-        log("✅ AUTH USER EMAIL:", user.email);
+        if (data?.session) {
+          log("session: VAN");
+        } else {
+          log("session: NINCS");
+          log("Ez nálad normális, mert email megerősítés van bekapcsolva.");
+        }
+
+        section("FONTOS");
+        log("Ez az oldal szándékosan NEM ír a profiles/subscriptions táblába.");
+        log("A két sort az adatbázis triggernek kell automatikusan létrehoznia.");
+        log("Most nézd meg Supabase Table Editorban a profiles és subscriptions táblát.");
       } catch (err) {
-        log("❌ AUTH TRY/CATCH HIBA:", err.message);
+        log("❌ TRY/CATCH HIBA:", err.message);
         log("STACK:", err.stack || "nincs stack");
-        return;
       }
-
-      section("PROFILES INSERT");
-
-      try {
-        const { data: profileData, error: profileError } = await supabase
-          .from("profiles")
-          .insert({
-            id: user.id,
-            email: email,
-            full_name: fullName,
-            created_at: now
-          })
-          .select();
-
-        log("PROFILE DATA:", profileData);
-        log("PROFILE ERROR:", profileError);
-
-        if (profileError) {
-          log("❌ PROFILES INSERT HIBA:", profileError.message);
-          log("Hiba objektum:", profileError);
-          log("Valószínű ok: RLS policy hiányzik vagy tiltja az insertet.");
-          return;
-        }
-
-        log("✅ PROFILE INSERT OK");
-      } catch (err) {
-        log("❌ PROFILE TRY/CATCH HIBA:", err.message);
-        log("STACK:", err.stack || "nincs stack");
-        return;
-      }
-
-      section("SUBSCRIPTIONS INSERT");
-
-      try {
-        const { data: subscriptionData, error: subscriptionError } = await supabase
-          .from("subscriptions")
-          .insert({
-            user_id: user.id,
-            access_type: "trial",
-            status: "active",
-            trial_started_at: now,
-            trial_ends_at: trialEnd,
-            trial_used: true,
-            created_at: now,
-            updated_at: now
-          })
-          .select();
-
-        log("SUBSCRIPTION DATA:", subscriptionData);
-        log("SUBSCRIPTION ERROR:", subscriptionError);
-
-        if (subscriptionError) {
-          log("❌ SUBSCRIPTIONS INSERT HIBA:", subscriptionError.message);
-          log("Hiba objektum:", subscriptionError);
-          log("Valószínű ok: RLS policy hiányzik vagy tiltja az insertet.");
-          return;
-        }
-
-        log("✅ SUBSCRIPTION INSERT OK");
-      } catch (err) {
-        log("❌ SUBSCRIPTION TRY/CATCH HIBA:", err.message);
-        log("STACK:", err.stack || "nincs stack");
-        return;
-      }
-
-      section("VÉGEREDMÉNY");
-      log("✅ MINDEN LÉPÉS SIKERES");
-      log("Auth user létrejött");
-      log("Profiles sor létrejött");
-      log("Subscriptions sor létrejött");
     });
   </script>
 </body>
